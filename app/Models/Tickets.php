@@ -30,6 +30,6 @@ class Tickets extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class); // ✅ No 's' — it's 'user', singular
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

@@ -100,8 +100,7 @@ class TicketsController extends Controller
 
     public function show($id): Response
     {
-
-        $ticket = Tickets::findOrFail($id);
+        $ticket = Tickets::with('user')->findOrFail($id); // eager load assigned user
 
         $clients = Clients::select(['id', 'name'])->get()->map(fn($c) => [
             'value' => $c->id,
@@ -111,9 +110,12 @@ class TicketsController extends Controller
         return Inertia::render('Tickets/View', [
             'ticket' => $ticket,
             'clients' => $clients,
+            'assignedUser' => $ticket->user ? [
+                'id' => $ticket->user->id,
+                'name' => $ticket->user->name,
+            ] : null,
         ]);
     }
-
 
 
 

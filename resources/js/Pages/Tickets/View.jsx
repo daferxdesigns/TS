@@ -2,11 +2,10 @@ import { Head, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.jsx';
 
 import InputError from '@/Components/InputError.jsx';
-
 import PrimaryButton from '@/Components/PrimaryButton.jsx';
 import Select from 'react-select';
 
-export default function TicketView({ ticket, clients,user }) {
+export default function TicketView({ ticket, clients, assignedUser  }) {
     const { data, setData, patch, processing, errors } = useForm({
         comment: '', // for comment or update section
     });
@@ -96,12 +95,18 @@ export default function TicketView({ ticket, clients,user }) {
 
                             {/* People Involved */}
                             <div className="bg-white shadow-sm rounded-lg p-6 border">
-                                <h4 className="text-md font-semibold text-gray-800 mb-2">People Involved</h4>
-                                <ul className="text-sm text-gray-700 list-disc list-inside">
-                                    <li>{clients.find(c => c.value === ticket.the_client)?.label || 'Unassigned'}</li>
-                                    {/* Add more roles if available like creator, watchers, etc */}
-                                </ul>
-                            </div>
+                            <h4 className="text-md font-semibold text-gray-800 mb-2">People Involved</h4>
+                           <ul className="text-sm text-gray-700 list-disc list-inside">
+                            <li>
+                                <span className="font-medium">Client:</span>{' '}
+                                {clients.find(c => c.value === ticket.the_client)?.label || 'Unassigned'}
+                            </li>
+                            <li>
+                                <span className="font-medium">Assigned Agent:</span>{' '}
+                                {assignedUser?.name || 'Unassigned'}
+                            </li>
+                        </ul>
+                        </div>
                         </div>
 
                     </div>
