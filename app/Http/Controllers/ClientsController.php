@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use App\Models\Clients;
 use Illuminate\Http\Request;
 
@@ -34,10 +35,16 @@ class ClientsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Clients $clients)
+    public function show($id)
     {
-        //
+        //  dd($id);
+        $clients = Clients::with('tickets')->findOrFail($id);
+        // dd($clients);
+        return Inertia::render('Clients/Show', [
+            'clients' => $clients
+        ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.

@@ -86,6 +86,12 @@ export default function TicketView({ ticket, clients, assignedUser  }) {
 
                         {/* ✅ Right Sidebar */}
                         <div className="space-y-6">
+                               {/* Systems Info */}
+                            <div className="bg-white shadow-sm rounded-lg p-6 border">
+                                <h4 className="text-md font-semibold text-gray-800 mb-2">Progress</h4>
+                                <p className="text-sm text-gray-700">Status: <strong>{ticket.status.replace('_', ' ').toUpperCase()}</strong></p>
+                                {/* Optionally add progress bar here */}
+                            </div>
                             {/* Progress Section */}
                             <div className="bg-white shadow-sm rounded-lg p-6 border">
                                 <h4 className="text-md font-semibold text-gray-800 mb-2">Progress</h4>
@@ -100,6 +106,10 @@ export default function TicketView({ ticket, clients, assignedUser  }) {
                             <li>
                                 <span className="font-medium">Client:</span>{' '}
                                 {clients.find(c => c.value === ticket.the_client)?.label || 'Unassigned'}
+                            </li>
+                             <li>
+                                <span className="font-medium">Installer:</span>{' '}
+                                Unassigned
                             </li>
                             <li>
                                 <span className="font-medium">Assigned Agent:</span>{' '}
