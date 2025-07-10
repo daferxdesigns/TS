@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\TaskController;
 use PHPUnit\Framework\Attributes\Ticket;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketsController;
 
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('tasks', TaskController::class);
 
     Route::resource('tickets', TicketsController::class);
+    Route::post('/tickets/{ticket}/comments', [CommentController::class, 'store'])->name('comments.store');
 
     Route::resource('clients', ClientsController::class);
     // Route::get('/clients/{id}', [ClientsController::class, 'show'])->name('clients.show');

@@ -15,6 +15,7 @@ use PHPUnit\Framework\Attributes\Ticket;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 
+
 class TicketsController extends Controller
 {
     /**
@@ -98,22 +99,17 @@ class TicketsController extends Controller
         ]);
     }
 
-    public function show($id): Response
+    public function show(Tickets $ticket)
     {
-        $ticket = Tickets::with('user')->findOrFail($id); // eager load assigned user
-
-        $clients = Clients::select(['id', 'name'])->get()->map(fn($c) => [
-            'value' => $c->id,
-            'label' => $c->name,
-        ]);
+        $ticket->load('comments.user'); // eager load comments with user
 
         return Inertia::render('Tickets/View', [
             'ticket' => $ticket,
-            'clients' => $clients,
-            'assignedUser' => $ticket->user ? [
-                'id' => $ticket->user->id,
-                'name' => $ticket->user->name,
-            ] : null,
+            'clients' => Clients::all()->map(fn($client) => [
+                'value' => $client->id,
+                'label' => $client->name
+            ]),
+            'assignedUser' => $ticket->assignedUser,
         ]);
     }
 

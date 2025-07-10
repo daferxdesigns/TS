@@ -23,6 +23,10 @@ class Tickets extends Model
 
     ];
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'ticket_id'); // ✅ Laravel will use ticket_id
+    }
     public function clients()
     {
         return $this->belongsTo(Client::class, 'the_client'); // 'the_client' is your foreign key

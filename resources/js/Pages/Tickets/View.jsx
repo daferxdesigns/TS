@@ -10,10 +10,13 @@ export default function TicketView({ ticket, clients, assignedUser  }) {
         comment: '', // for comment or update section
     });
 
-    const handleCommentSubmit = (e) => {
-        e.preventDefault();
-        // patch or post route here for comment submission
-    };
+   const handleCommentSubmit = (e) => {
+    e.preventDefault();
+    patch(route('comments.store', ticket.id), {
+        preserveScroll: true,
+        onSuccess: () => setData('comment', ''),
+    });
+};
 
     return (
         <AuthenticatedLayout
@@ -81,6 +84,25 @@ export default function TicketView({ ticket, clients, assignedUser  }) {
                                         Submit Comment
                                     </PrimaryButton>
                                 </form>
+                            </div>
+
+                            {/* ✅ Display Existing Comments */}
+                            <div className="mt-6">
+                                <h4 className="text-md font-semibold text-gray-800 mb-2">Comments</h4>
+                                {ticket.comments.length === 0 ? (
+                                    <p className="text-sm text-gray-500">No comments yet.</p>
+                                ) : (
+                                    <div className="space-y-4">
+                                        {ticket.comments.map((c) => (
+                                            <div key={c.id} className="border-t pt-2 text-sm text-gray-700">
+                                                <p>{c.comment}</p>
+                                                <p className="text-xs text-gray-500 mt-1">
+                                                    — {c.user?.name ?? 'Unknown'} at {new Date(c.created_at).toLocaleString()}
+                                                </p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
 
