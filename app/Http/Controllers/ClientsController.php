@@ -11,9 +11,27 @@ class ClientsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $search = $request->input('search');
+
+        $clients = Clients::query()
+            ->when(
+                $search,
+                fn($query) =>
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('lastname', 'like', "%{$search}%")
+            )
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('Clients/Index', [
+            'clients' => $clients,
+            'filters' => [
+                'search' => $search,
+            ],
+        ]);
     }
 
     /**

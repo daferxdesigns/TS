@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 export default function Show({ auth, clients }) {
     return (
@@ -37,7 +37,12 @@ export default function Show({ auth, clients }) {
                                     <li key={ticket.id} className="py-4">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <h4 className="text-lg font-semibold">{ticket.title}</h4>
+                                                <Link 
+                                                    href={route('tickets.show', { id: ticket.id })}
+                                                    className="text-lg font-semibold text-blue-600 hover:underline"
+                                                >
+                                                    {ticket.title}
+                                                </Link>
                                                 <p className="text-sm text-gray-500">Status: {ticket.status}</p>
                                             </div>
                                             <span className="text-sm text-gray-400">Ticket ID: #{ticket.id}</span>

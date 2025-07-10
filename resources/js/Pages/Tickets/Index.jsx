@@ -126,13 +126,19 @@ export default function PostsIndex({ tickets, clients }) {
                                                     </Link>
                                                 </td>
                                                 <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
-                                                    <Link
-                                                        href={route('clients.show', { id: ticket.id })}
-                                                        className="text-blue-600 underline"
-                                                    >
-                                                    {clients[ticket.the_client]?.name ?? 'N/A'}
-                                                    </Link>
-                                                </td>
+                                        <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+                                            {clients[ticket.the_client]?.id ? (
+                                                <Link
+                                                href={route('clients.show', { client: clients[ticket.the_client].id })}
+                                                className="text-blue-600 underline"
+                                                >
+                                                {clients[ticket.the_client]?.name ?? 'N/A'}
+                                                </Link>
+                                            ) : (
+                                                'N/A'
+                                            )}
+                                            </td>
+                                                                                            </td>
                                                 <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
                                                     <span
                                                         className={`px-3 py-1 text-xs font-semibold uppercase rounded-full ${
