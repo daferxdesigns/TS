@@ -117,7 +117,7 @@ class TicketsController extends Controller
 
     public function update(Tickets $ticket, UpdateTicketRequest $request)
     {
-        //dd($request);
+        // dd($request);
         // Validate and update only the provided fields, e.g. description
         $validated = $request->validated();
 

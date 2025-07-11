@@ -3,54 +3,91 @@ import { route } from 'ziggy-js';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.jsx';
 import InputError from '@/Components/InputError.jsx';
 import PrimaryButton from '@/Components/PrimaryButton.jsx';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function TicketView({ ticket, clients, assignedUser, auth }) {
   // Comment form state
-  const { data, setData, post, processing, errors } = useForm({
+  const {
+    data: commentData,
+    setData: setCommentData,
+    post: postComment,
+    processing: processingComment,
+    errors: commentErrors,
+  } = useForm({
     comment: '',
   });
 
   // Editable description state and form
   const [editingDesc, setEditingDesc] = useState(false);
-  const { data: descData, setData: setDescData, put, processing: processingDesc, errors: descErrors } = useForm({
+  const {
+    data: descData,
+    setData: setDescData,
+    put: putDesc,
+    processing: processingDesc,
+    errors: descErrors,
+  } = useForm({
     description: ticket.description || '',
   });
 
+  // Status form state
+  const {
+    data: statusData,
+    setData: setStatusData,
+    put: putStatus,
+    processing: processingStatus,
+    errors: statusErrors,
+  } = useForm({
+    status: ticket.status || 'open',
+  });
+
+  // Handle comment submit
   const handleCommentSubmit = (e) => {
     e.preventDefault();
-    post(route('comments.store', ticket.id), {
+    postComment(route('comments.store', ticket.id), {
       preserveScroll: true,
-      onSuccess: () => setData('comment', ''),
+      onSuccess: () => setCommentData('comment', ''),
     });
   };
 
-  // Save description automatically when textarea loses focus (blur)
- const handleDescriptionBlur = () => {
-   
-  console.log('Saving description...', descData.description);
-  put(route('tickets.update', ticket.id), {
-    description: descData.description,
-    preserveScroll: true,
-    onSuccess: () => {
-      console.log('Save success');
-      setEditingDesc(false);
-    },
-    onError: (errors) => {
-      console.error('Save error', errors);
-      setEditingDesc(false);
-    },
-  });
-};
+  // Save description on blur
+  const handleDescriptionBlur = () => {
+    putDesc(
+      route('tickets.update', ticket.id),
+      { description: descData.description },
+      {
+        preserveScroll: true,
+        onSuccess: () => setEditingDesc(false),
+        onError: () => setEditingDesc(false),
+      }
+    );
+  };
 
-
-  // Optional: cancel editing and reset description to original if user presses Escape key
+  // Cancel editing description on Escape key
   const handleKeyDown = (e) => {
     if (e.key === 'Escape') {
       setEditingDesc(false);
       setDescData('description', ticket.description || '');
     }
   };
+
+  // Handle status change — just update form data here
+  const handleStatusChange = (e) => {
+    setStatusData('status', e.target.value);
+  };
+
+  // Use effect to save status whenever it changes (and is different from initial)
+  useEffect(() => {
+    if (statusData.status !== ticket.status) {
+      putStatus(
+        route('tickets.update', ticket.id),
+        {
+          preserveScroll: true,
+          onSuccess: () => console.log('Status updated'),
+          onError: (err) => console.error('Error updating status:', err),
+        }
+      );
+    }
+  }, [statusData.status]);
 
   return (
     <AuthenticatedLayout
@@ -76,20 +113,20 @@ export default function TicketView({ ticket, clients, assignedUser, auth }) {
                   <span className="font-medium">Status:</span>{' '}
                   <span
                     className={`px-2 py-1 text-xs font-semibold uppercase rounded-full ${
-                      ticket.status === 'open'
+                      statusData.status === 'open'
                         ? 'bg-blue-100 text-blue-800'
-                        : ticket.status === 'in_progress'
+                        : statusData.status === 'in_progress'
                         ? 'bg-yellow-100 text-yellow-800'
-                        : ticket.status === 'pending'
+                        : statusData.status === 'pending'
                         ? 'bg-orange-100 text-orange-800'
-                        : ticket.status === 'resolved'
+                        : statusData.status === 'resolved'
                         ? 'bg-green-100 text-green-800'
-                        : ticket.status === 'closed'
+                        : statusData.status === 'closed'
                         ? 'bg-gray-200 text-gray-700'
                         : 'bg-gray-100 text-gray-600'
                     }`}
                   >
-                    {ticket.status.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                    {statusData.status.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
                   </span>
                 </p>
               </div>
@@ -129,13 +166,13 @@ export default function TicketView({ ticket, clients, assignedUser, auth }) {
                 <form onSubmit={handleCommentSubmit}>
                   <textarea
                     rows="4"
-                    value={data.comment}
-                    onChange={(e) => setData('comment', e.target.value)}
+                    value={commentData.comment}
+                    onChange={(e) => setCommentData('comment', e.target.value)}
                     className="w-full border rounded-md p-2 text-sm"
                     placeholder="Write your comment or update here..."
                   />
-                  <InputError message={errors.comment} className="mt-2" />
-                  <PrimaryButton className="mt-4" disabled={processing}>
+                  <InputError message={commentErrors.comment} className="mt-2" />
+                  <PrimaryButton className="mt-4" disabled={processingComment}>
                     Submit Comment
                   </PrimaryButton>
                 </form>
@@ -165,9 +202,20 @@ export default function TicketView({ ticket, clients, assignedUser, auth }) {
             <div className="space-y-6">
               <div className="bg-white shadow-sm rounded-lg p-6 border">
                 <h4 className="text-md font-semibold text-gray-800 mb-2">Progress</h4>
-                <p className="text-sm text-gray-700">
-                  Status: <strong>{ticket.status.replace('_', ' ').toUpperCase()}</strong>
-                </p>
+                <select
+                  id="status"
+                  value={statusData.status}
+                  onChange={handleStatusChange}
+                  className="w-full border rounded-md p-2 text-sm"
+                  disabled={processingStatus}
+                >
+                  <option value="open">Open</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="pending">Pending</option>
+                  <option value="resolved">Resolved</option>
+                  <option value="closed">Closed</option>
+                </select>
+                <InputError message={statusErrors.status} className="mt-2" />
               </div>
 
               <div className="bg-white shadow-sm rounded-lg p-6 border">
