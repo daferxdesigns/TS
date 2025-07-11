@@ -21,14 +21,13 @@ class UpdateTicketRequest extends FormRequest
      */
     public function rules(): array
     {
-
-
         return [
-            'title' => ['required', 'string'], // title
-            'description' => ['required', 'string'],
+            'title' => ['sometimes', 'required', 'string'],
+            'description' => ['sometimes', 'required', 'string'],
             'the_client' => ['nullable', 'integer'],
         ];
     }
+
 
     public function attributes(): array
     {

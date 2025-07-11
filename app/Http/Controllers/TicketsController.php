@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Task;
+//use App\Models\Task;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Clients;
@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\RedirectResponse;
-use PHPUnit\Framework\Attributes\Ticket;
+//use PHPUnit\Framework\Attributes\Ticket;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 
@@ -117,18 +117,22 @@ class TicketsController extends Controller
 
     public function update(Tickets $ticket, UpdateTicketRequest $request)
     {
+        //dd($request);
+        // Validate and update only the provided fields, e.g. description
+        $validated = $request->validated();
 
-        //dd($request->all());
-        // dd($tickets);
+        // Update the ticket (description or other fields)
+        $ticket->update($validated);
 
-        $ticket->update($request->validated());
+        // If request expects JSON (Inertia), return back without redirecting to index
+        if ($request->wantsJson()) {
+            return response()->json(['message' => __('Ticket updated successfully'), 'ticket' => $ticket]);
+        }
 
-        //  dd($tickets);
-
-        return redirect()->route('tickets.index')
+        // Otherwise redirect to the ticket view page (adjust route if needed)
+        return redirect()->route('tickets.show', $ticket->id)
             ->with('message', __('Ticket updated successfully'));
     }
-
 
 
 

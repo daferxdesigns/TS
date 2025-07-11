@@ -25,6 +25,8 @@ export default function PostsIndex({ tickets, clients }) {
         closed: 'Closed',
     };
 
+ 
+
     const filteredTickets = tickets.data
         .filter(ticket =>
             statusFilter ? ticket.status?.toLowerCase() === statusFilter.toLowerCase() : true
