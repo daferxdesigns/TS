@@ -42,6 +42,7 @@ export default function TicketView({ ticket, clients, assignedUser, auth }) {
 
   // Handle comment submit
   const handleCommentSubmit = (e) => {
+    
     e.preventDefault();
     postComment(route('comments.store', ticket.id), {
       preserveScroll: true,
@@ -105,8 +106,10 @@ export default function TicketView({ ticket, clients, assignedUser, auth }) {
               <div className="bg-white shadow-sm rounded-lg p-6 border">
                 <h3 className="text-lg font-semibold text-gray-800">{ticket.title}</h3>
                 <p className="text-sm text-gray-500">Ticket ID: #{ticket.ticket_number}</p>
+                <p className="text-sm text-gray-500">Serial Number: {ticket.serial_number ?? 'N/A'} </p>
+                <p className="text-sm text-gray-500">Reference: </p>
                 <p className="mt-2 text-sm text-gray-700">
-                  <span className="font-medium">Assigned To:</span>{' '}
+                  <span className="font-medium">Client:</span>{' '}
                   {clients.find((c) => c.value === ticket.the_client)?.label || 'Unassigned'}
                 </p>
                 <p className="mt-1">

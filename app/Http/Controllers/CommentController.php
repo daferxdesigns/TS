@@ -12,7 +12,7 @@ class CommentController extends Controller
 {
     public function store(StoreCommentRequest $request, Tickets $ticket)
     {
-
+        //dd($request);
         $ticket->comments()->create([
             'user_id' => auth()->id(),
             'comment' => $request->comment,

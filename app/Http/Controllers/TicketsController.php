@@ -107,7 +107,7 @@ class TicketsController extends Controller
             'ticket' => $ticket,
             'clients' => Clients::all()->map(fn($client) => [
                 'value' => $client->id,
-                'label' => $client->name
+                'label' => $client->name . ' ' . $client->lastname
             ]),
             'assignedUser' => $ticket->assignedUser,
         ]);
