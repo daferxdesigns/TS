@@ -112,6 +112,7 @@ export default function TicketView({ ticket, clients, assignedUser, auth }) {
                   <span className="font-medium">Client:</span>{' '}
                   {clients.find((c) => c.value === ticket.the_client)?.label || 'Unassigned'}
                 </p>
+                 <p className="text-sm text-gray-700">Address:  {clients.find((c) => c.value === ticket.the_client)?.address || 'No Address Saved'}</p>
                 <p className="mt-1">
                   <span className="font-medium">Status:</span>{' '}
                   <span
