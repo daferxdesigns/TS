@@ -81,23 +81,35 @@ class TicketsController extends Controller
      */
 
 
+
+
     public function edit(Tickets $ticket): Response
     {
-        // dd($ticket);
-        $clients = Clients::select(['id', 'name'])
+        $clients = Clients::select(['id', 'name', 'lastname'])
             ->get()
             ->map(function ($client) {
                 return [
                     'value' => $client->id,
-                    'label' => $client->name,
+                    'label' => $client->name . ' ' . $client->lastname,
+                ];
+            });
+
+        $users = User::select(['id', 'name'])
+            ->get()
+            ->map(function ($user) {
+                return [
+                    'value' => $user->id,
+                    'label' => $user->name,
                 ];
             });
 
         return Inertia::render('Tickets/Edit', [
             'ticket' => $ticket,
             'clients' => $clients,
+            'users' => $users, // ✅ Now passed to frontend
         ]);
     }
+
 
     public function show(Tickets $ticket)
     {
@@ -108,6 +120,7 @@ class TicketsController extends Controller
             'clients' => Clients::all()->map(fn($client) => [
                 'value' => $client->id,
                 'label' => $client->name . ' ' . $client->lastname,
+                'phone' => '0' . $client->phone,
                 'address' => $client->address . ',' . $client->suburb . ',' . $client->state . ',' . $client->postcode
             ]),
             'assignedUser' => $ticket->assignedUser,

@@ -24,6 +24,8 @@ class UpdateTicketRequest extends FormRequest
 
         return [
             'title' => ['sometimes',  'string'],
+            'user_id' => ['sometimes',  'integer'],
+            'serial_number' => ['sometimes', 'string'],
             'description' => ['sometimes', 'string'],
             'the_client' => ['nullable', 'integer'],
             'status' => ['sometimes', 'required', 'string', 'in:open,in_progress,pending,resolved,closed'],

@@ -93,10 +93,20 @@ export default function TicketView({ ticket, clients, assignedUser, auth }) {
   return (
     <AuthenticatedLayout
       user={auth?.user}
-      header={<h2 className="text-xl font-semibold leading-tight text-gray-800">View Ticket</h2>}
+     header={
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold leading-tight text-gray-800">View Ticket</h2>
+              <a
+                href={route('tickets.edit', { id: ticket.id })}
+                className="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition"
+              >
+                Edit
+              </a>
+            </div>
+          }
     >
       <Head title="View Ticket" />
-
+    
       <div className="py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -112,6 +122,7 @@ export default function TicketView({ ticket, clients, assignedUser, auth }) {
                   <span className="font-medium">Client:</span>{' '}
                   {clients.find((c) => c.value === ticket.the_client)?.label || 'Unassigned'}
                 </p>
+                 <p className="text-sm text-gray-700">Phone:  {clients.find((c) => c.value === ticket.the_client)?.phone || 'No Address Saved'}</p>
                  <p className="text-sm text-gray-700">Address:  {clients.find((c) => c.value === ticket.the_client)?.address || 'No Address Saved'}</p>
                 <p className="mt-1">
                   <span className="font-medium">Status:</span>{' '}
