@@ -32,6 +32,7 @@ class TicketsController extends Controller
         return Inertia::render('Tickets/Index', [
             'tickets' => $tickets,
             'clients' => $clients,
+
         ]);
     }
 
@@ -113,7 +114,7 @@ class TicketsController extends Controller
 
     public function show(Tickets $ticket)
     {
-        $ticket->load('comments.user'); // eager load comments with user
+        $ticket->load(['comments.user', 'assignedUser']); // eager load comments with user
 
         return Inertia::render('Tickets/View', [
             'ticket' => $ticket,
@@ -123,6 +124,7 @@ class TicketsController extends Controller
                 'phone' => '0' . $client->phone,
                 'address' => $client->address . ',' . $client->suburb . ',' . $client->state . ',' . $client->postcode
             ]),
+
             'assignedUser' => $ticket->assignedUser,
         ]);
     }

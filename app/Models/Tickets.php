@@ -38,4 +38,9 @@ class Tickets extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function assignedUser()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

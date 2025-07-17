@@ -37,6 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/tickets/{ticket}/comments', [CommentController::class, 'store'])->name('comments.store');
 
     Route::resource('clients', ClientsController::class);
+    Route::get('/clients/{client}/edit', [ClientsController::class, 'edit'])->name('clients.edit');
+    Route::put('/clients/{client}', [ClientsController::class, 'update'])->name('clients.update');
     // Route::get('/clients/{id}', [ClientsController::class, 'show'])->name('clients.show');
 });
 

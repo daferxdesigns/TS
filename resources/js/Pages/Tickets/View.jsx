@@ -245,7 +245,7 @@ export default function TicketView({ ticket, clients, assignedUser, auth }) {
                   </li>
                   <li>
                     <span className="font-medium">Assigned Agent:</span>{' '}
-                    {assignedUser?.name || 'Unassigned'}
+                     {assignedUser ? `${assignedUser.name}` : 'Unassigned'}
                   </li>
                 </ul>
               </div>

@@ -67,17 +67,32 @@ class ClientsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Clients $clients)
+    public function edit(Clients $client)
     {
-        //
+        return Inertia::render('Clients/Edit', [
+            'client' => $client,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Clients $clients)
+    public function update(Request $request, Clients $client)
     {
-        //
+
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'email_address' => 'nullable|email|max:255',
+            'address' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:100',
+            'postcode' => 'nullable|string|max:20',
+        ]);
+
+        $client->update($validated);
+
+        return redirect()->route('clients.show', $client->id)->with('success', 'Client updated successfully.');
     }
 
     /**

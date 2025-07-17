@@ -182,7 +182,7 @@ export default function PostsIndex({ tickets, clients }) {
                               href={route('clients.show', { client: clients[ticket.the_client].id })}
                               className="text-black-700 font-bold"
                             >
-                              {clients[ticket.the_client]?.name ?? 'N/A'}
+                              {clients[ticket.the_client] ? `${clients[ticket.the_client].name} ${clients[ticket.the_client].lastname}` : 'N/A'}
                             </Link>
                           ) : (
                             'N/A'

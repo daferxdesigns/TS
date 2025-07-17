@@ -10,7 +10,16 @@ export default function Show({ auth, clients }) {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                     {/* Left Panel - Profile Summary */}
-                    <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center text-center">
+                    <div className="bg-white rounded-xl shadow p-6 relative flex flex-col items-center text-center">
+
+                        {/* Edit Button */}
+                        <Link
+                            href={route('clients.edit', clients.id)}
+                            className="absolute top-4 right-4 text-sm text-blue-600 hover:underline"
+                        >
+                            Edit
+                        </Link>
+
                         <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center text-2xl font-semibold text-gray-600">
                             {clients.name.charAt(0)}{clients.lastname.charAt(0)}
                         </div>
