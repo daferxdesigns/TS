@@ -16,14 +16,14 @@ class ClientsController extends Controller
         $search = $request->input('search');
 
         $clients = Clients::query()
-            ->when(
-                $search,
-                fn($query) =>
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('lastname', 'like', "%{$search}%")
-            )
-            ->orderBy('name')
-            ->paginate(10)
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('lastname', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('id')
+            ->paginate(50)
             ->withQueryString();
 
         return Inertia::render('Clients/Index', [
@@ -39,17 +39,28 @@ class ClientsController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Clients/Create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
-    }
 
+        // dd($request);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'email_address' => 'nullable|email|max:255',
+            'address' => 'nullable|string|max:255',
+            'suburb' => 'nullable|string|max:255',
+            'state' => 'nullable|string|max:100',
+            'postcode' => 'nullable|string|max:20',
+        ]);
+
+        Clients::create($validated);
+
+        return redirect()->route('clients.index')->with('success', 'Client added successfully.');
+    }
     /**
      * Display the specified resource.
      */

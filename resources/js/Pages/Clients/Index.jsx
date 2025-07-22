@@ -41,8 +41,15 @@ export default function ClientsIndex({ clients }) {
                             <div className="min-w-full align-middle">
                                 <AlertMessage />
 
-                                {/* Search */}
-                                <div className="mb-4">
+                              {/* Header controls */}
+                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+                                    <Link
+                                        href={route('clients.create')}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded shadow transition"
+                                    >
+                                        + Add New Client
+                                    </Link>
+
                                     <input
                                         type="text"
                                         placeholder="Search by Name or Lastname"
@@ -51,7 +58,6 @@ export default function ClientsIndex({ clients }) {
                                         className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full sm:w-80"
                                     />
                                 </div>
-
                                 {/* Clients Table */}
                                 <table className="min-w-full divide-y divide-gray-200 border">
                                     <thead>

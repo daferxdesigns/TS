@@ -9,12 +9,13 @@ class Clients extends Model
 {
     protected $fillable = [
         'name',
-        'last_name',
-        'contact_number',
-        'email',
+        'lastname',
+        'phone',
+        'email_address',
         'address',
+        'suburb',
         'state',
-        'zip_code'
+        'postcode'
     ];
 
     public function tickets(): HasMany
