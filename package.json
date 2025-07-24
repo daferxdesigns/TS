@@ -21,6 +21,7 @@
         "vite": "^6.0"
     },
     "dependencies": {
+        "lucide-react": "^0.525.0",
         "react-select": "^5.10.1",
         "ziggy-js": "^2.5.3"
     }

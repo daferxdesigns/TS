@@ -43,6 +43,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Clients
                                 </NavLink>
                                 <NavLink
+                                href={route('installers.index')}
+                                active={route().current('installers.*')}
+                                >
+                                    Installers
+                                </NavLink>
+                                <NavLink
                                     href={route('tasks.index')}
                                     active={route().current('tasks.*')}
                                 >

@@ -7,6 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Installers extends Model
 {
-    /** @use HasFactory<\Database\Factories\InstallersFactory> */
-    use HasFactory;
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'phone',
+        'business',
+        'email_address',
+        'address',
+        'latitude',
+        'longitute',
+        'grid',
+        'battery',
+        'solar',
+        'wkt',
+        'updated_at',
+        'created_at'
+    ];
 }

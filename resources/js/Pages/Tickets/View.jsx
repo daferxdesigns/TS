@@ -214,6 +214,7 @@ export default function TicketView({ ticket, clients, assignedUser, auth }) {
             </div>
 
             {/* Sidebar */}
+            
             <div className="space-y-6">
               <div className="bg-white shadow-sm rounded-lg p-6 border">
                 <h4 className="text-md font-semibold text-gray-800 mb-2">Progress</h4>

@@ -7,6 +7,7 @@ use App\Http\Controllers\TaskController;
 use PHPUnit\Framework\Attributes\Ticket;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\InstallersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketsController;
 
@@ -33,13 +34,13 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('tickets', TicketsController::class);
     Route::put('/tickets/{ticket}/updates', [TicketsController::class, 'update'])->name('tickets.update');
-
     Route::post('/tickets/{ticket}/comments', [CommentController::class, 'store'])->name('comments.store');
 
     Route::resource('clients', ClientsController::class);
     Route::get('/clients/{client}/edit', [ClientsController::class, 'edit'])->name('clients.edit');
     Route::put('/clients/{client}', [ClientsController::class, 'update'])->name('clients.update');
-    // Route::get('/clients/{id}', [ClientsController::class, 'show'])->name('clients.show');
+
+    Route::resource('installers', InstallersController::class);
 });
 
 require __DIR__ . '/auth.php';
