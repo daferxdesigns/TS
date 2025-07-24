@@ -5,7 +5,7 @@ import InputError from '@/Components/InputError.jsx';
 import PrimaryButton from '@/Components/PrimaryButton.jsx';
 import { useState, useEffect } from 'react';
 
-export default function TicketView({ ticket, clients, assignedUser, auth }) {
+export default function TicketView({ ticket, clients, assignedUser, assignedInstaller, auth }) {
   // Comment form state
   const {
     data: commentData,
@@ -242,8 +242,9 @@ export default function TicketView({ ticket, clients, assignedUser, auth }) {
                     {clients.find((c) => c.value === ticket.the_client)?.label || 'Unassigned'}
                   </li>
                   <li>
-                    <span className="font-medium">Installer:</span> Unassigned
-                  </li>
+                  <span className="font-medium">Installer:</span>{' '}
+                  {assignedInstaller ? `${assignedInstaller.full_name}` : 'Unassigned'}
+                </li>
                   <li>
                     <span className="font-medium">Assigned Agent:</span>{' '}
                      {assignedUser ? `${assignedUser.name}` : 'Unassigned'}

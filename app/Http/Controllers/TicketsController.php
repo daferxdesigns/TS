@@ -7,11 +7,12 @@ use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Clients;
 use App\Models\Tickets;
+use App\Models\Installers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Foundation\Auth\User;
-use Illuminate\Http\RedirectResponse;
 //use PHPUnit\Framework\Attributes\Ticket;
+use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 
@@ -84,7 +85,7 @@ class TicketsController extends Controller
 
 
 
-    public function edit(Tickets $ticket): Response
+    public function edit(Tickets $ticket): \Inertia\Response
     {
         $clients = Clients::select(['id', 'name', 'lastname'])
             ->get()
@@ -104,17 +105,27 @@ class TicketsController extends Controller
                 ];
             });
 
+        $installers = Installers::select(['id', 'first_name', 'last_name'])
+            ->get()
+            ->map(function ($installer) {
+                return [
+                    'value' => $installer->id,
+                    'label' => $installer->first_name . ' ' . $installer->last_name,
+                ];
+            });
+
         return Inertia::render('Tickets/Edit', [
             'ticket' => $ticket,
             'clients' => $clients,
-            'users' => $users, // ✅ Now passed to frontend
+            'users' => $users,
+            'installers' => $installers, // ✅ Added
         ]);
     }
 
-
     public function show(Tickets $ticket)
     {
-        $ticket->load(['comments.user', 'assignedUser']); // eager load comments with user
+        // eager load installer as assignedInstaller, plus comments and assignedUser
+        $ticket->load(['comments.user', 'assignedUser', 'assignedInstaller']);
 
         return Inertia::render('Tickets/View', [
             'ticket' => $ticket,
@@ -124,8 +135,14 @@ class TicketsController extends Controller
                 'phone' => '0' . $client->phone,
                 'address' => $client->address . ',' . $client->suburb . ',' . $client->state . ',' . $client->postcode
             ]),
-
             'assignedUser' => $ticket->assignedUser,
+            'assignedInstaller' => $ticket->assignedInstaller
+                ? [
+                    'first_name' => $ticket->assignedInstaller->first_name,
+                    'last_name' => $ticket->assignedInstaller->last_name,
+                    'full_name' => $ticket->assignedInstaller->first_name . ' ' . $ticket->assignedInstaller->last_name,
+                ]
+                : null,
         ]);
     }
 
@@ -133,7 +150,7 @@ class TicketsController extends Controller
 
     public function update(Tickets $ticket, UpdateTicketRequest $request)
     {
-        // dd($request);
+        //dd($request);
         // Validate and update only the provided fields, e.g. description
         $validated = $request->validated();
 

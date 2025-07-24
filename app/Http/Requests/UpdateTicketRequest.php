@@ -28,6 +28,7 @@ class UpdateTicketRequest extends FormRequest
             'serial_number' => ['sometimes', 'string'],
             'description' => ['sometimes', 'string'],
             'the_client' => ['nullable', 'integer'],
+            'installer' => ['nullable', 'integer'],
             'status' => ['sometimes', 'required', 'string', 'in:open,in_progress,pending,resolved,closed'],
         ];
     }

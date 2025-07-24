@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use GuzzleHttp\Client;
+use Psy\VersionUpdater\Installer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,7 +22,8 @@ class Tickets extends Model
         'the_client',
         'serial_number',
         'user_id',
-        'status'
+        'status',
+        'installer'
 
     ];
 
@@ -42,5 +44,10 @@ class Tickets extends Model
     public function assignedUser()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function assignedInstaller()
+    {
+        return $this->belongsTo(Installers::class, 'installer');
     }
 }

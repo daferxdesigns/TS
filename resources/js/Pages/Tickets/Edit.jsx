@@ -6,13 +6,14 @@ import InputError from '@/Components/InputError.jsx';
 import PrimaryButton from '@/Components/PrimaryButton.jsx';
 import Select from 'react-select';
 
-export default function Edit({ ticket, clients, users }) {
+export default function Edit({ ticket, clients, users, installers }) {
     const { data, setData, put, processing, errors } = useForm({
         title: ticket.title || '',
         serial_number: ticket.serial_number || '',
         description: ticket.description || '',
         the_client: ticket.the_client || '',
-        user_id: ticket.user_id || '', // 👈 Added for assigning user
+        user_id: ticket.user_id || '',
+        installer: ticket.installer || '', // 👈 new field
         id: ticket.id || '',
     });
 
@@ -90,7 +91,7 @@ export default function Edit({ ticket, clients, users }) {
                                         <InputError message={errors.the_client} className="mt-2" />
                                     </div>
 
-                                    {/* Assigned User (Linked to tickets.user_id) */}
+                                    {/* Assigned User */}
                                     <div className="mt-4 relative z-30">
                                         <InputLabel htmlFor="user_id" value="Assign to User" />
                                         <Select
@@ -106,6 +107,24 @@ export default function Edit({ ticket, clients, users }) {
                                             styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
                                         />
                                         <InputError message={errors.user_id} className="mt-2" />
+                                    </div>
+
+                                    {/* Assigned Installer */}
+                                    <div className="mt-4 relative z-20">
+                                        <InputLabel htmlFor="installer" value="Assign Installer" />
+                                        <Select
+                                            inputId="installer"
+                                            className="mt-1 w-full text-sm"
+                                            classNamePrefix="react-select"
+                                            options={installers}
+                                            value={installers.find(option => option.value === parseInt(data.installer))}
+                                            onChange={(selectedOption) => setData('installer', selectedOption?.value)}
+                                            isClearable
+                                            placeholder="Select an installer..."
+                                            menuPortalTarget={document.body}
+                                            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                                        />
+                                        <InputError message={errors.installer} className="mt-2" />
                                     </div>
 
                                     {/* Save Button */}
