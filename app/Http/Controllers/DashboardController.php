@@ -14,7 +14,6 @@ class DashboardController extends Controller
     /**
      * Display a listing of the resource.
      */
-
     public function statistics()
     {
         $ticketStatuses = Tickets::select('status')
@@ -23,15 +22,25 @@ class DashboardController extends Controller
             ->get()
             ->pluck('count', 'status');
 
+        $totalTickets = Tickets::count();
+        $totalOpen = Tickets::where('status', 'open')->count();
+        $totalInProgress = Tickets::where('status', 'in_progress')->count();
+
         $totalClients = Clients::count();
         $totalInstallers = Installers::count();
 
-        return Inertia::render('Dashboard', [  // NOT 'Dashboard/Statistics'
+        return Inertia::render('Dashboard', [
             'ticketStatuses' => $ticketStatuses,
+            'totalTickets' => $totalTickets,
+            'totalOpen' => $totalOpen,
+            'totalInProgress' => $totalInProgress,
             'totalClients' => $totalClients,
             'totalInstallers' => $totalInstallers,
         ]);
     }
+
+
+
 
     public function index()
     {
