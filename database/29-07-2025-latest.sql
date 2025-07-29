@@ -7750,7 +7750,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1358 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1375 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table crm.comments: ~1,333 rows (approximately)
 INSERT INTO `comments` (`id`, `user_id`, `ticket_id`, `comment`, `created_at`, `updated_at`) VALUES
@@ -9087,9 +9087,26 @@ INSERT INTO `comments` (`id`, `user_id`, `ticket_id`, `comment`, `created_at`, `
 	(1352, 1, 418, 'leaving this for now as no communication from the client and no update from Adam.', '2025-07-10 10:25:59', '2025-07-10 10:25:59'),
 	(1353, 1, 222, 'Marc was able to replace the main unit but needs to go back to comission the system as it requires an andriod for commissioning.', '2025-07-10 10:52:49', '2025-07-10 10:52:49'),
 	(1354, 1, 447, 'John just sent a battery serial number.\r\n<br> I sent a query to the manufacturer.', '2025-07-11 14:38:40', '2025-07-11 14:38:40'),
-	(1355, 2, 447, 'test\nhaha', '2025-07-14 12:38:33', '2025-07-14 12:38:33'),
-	(1356, 2, 447, 'test', '2025-07-14 18:16:29', '2025-07-14 18:16:29'),
-	(1357, 2, 447, 'test', '2025-07-23 13:38:48', '2025-07-23 13:38:48');
+	(1355, 1, 445, 'Fault stop reocurring and system has been working for quite some time now. I sent an email to client to keep monitoring the system and contact us if issue recurs or they have questions.', '2025-07-15 07:45:08', '2025-07-15 07:45:08'),
+	(1356, 1, 435, 'Alpha advised their tech will check the system next week ; Wed or Thu.', '2025-07-15 08:09:30', '2025-07-15 08:09:30'),
+	(1357, 1, 382, 'sent a followup email.', '2025-07-16 10:24:51', '2025-07-16 10:24:51'),
+	(1358, 1, 447, 'System is back to normal. Client is aware over the phone and sent an email regarding his query about the notification which is not available.', '2025-07-16 10:28:42', '2025-07-16 10:28:42'),
+	(1359, 1, 446, 'a dongle has been arranged to be sent to the client.', '2025-07-16 10:35:25', '2025-07-16 10:35:25'),
+	(1360, 1, 442, 'Client will have an internet installed this 23rd July and his electrician will assist us when that happens.', '2025-07-17 07:55:42', '2025-07-17 07:55:42'),
+	(1361, 1, 439, 'Saj is going today. 17/07', '2025-07-17 08:00:49', '2025-07-17 08:00:49'),
+	(1362, 1, 429, 'Marking this as resolved as client seems to be happy with the curent setup. And a settings was enabled to make sure that the battery is getting the power generated before exporting the solar.', '2025-07-17 10:52:09', '2025-07-17 10:52:09'),
+	(1363, 1, 449, 'The smart meters are connected to the breakers at the very bottom of the clients switchboard.', '2025-07-18 14:45:50', '2025-07-18 14:45:50'),
+	(1364, 1, 450, 'Energizer advised that the country settings has been reset or changed which causing the issue.', '2025-07-21 07:51:27', '2025-07-21 07:51:27'),
+	(1365, 1, 382, 'I’ve sent a follow-up email to GJ. They mentioned that they’ve already been to the site but advised they would need to return once the client has internet access. However, the client now has internet, yet it seems GJ is not keen on going back.', '2025-07-21 08:22:16', '2025-07-21 08:22:16'),
+	(1366, 1, 382, 'We will return on Wednesday the 20/08.', '2025-07-21 08:42:19', '2025-07-21 08:42:19'),
+	(1367, 1, 443, 'Sent an quote for a replacement.', '2025-07-22 11:35:22', '2025-07-22 11:35:22'),
+	(1368, 1, 451, 'System is back to normal, manually recharged the battery. Needs to be monitored.', '2025-07-23 07:30:48', '2025-07-23 07:30:48'),
+	(1369, 1, 439, 'No Update from Saj', '2025-07-23 08:47:17', '2025-07-23 08:47:17'),
+	(1370, 1, 454, 'Sent a followup email to the manufacturer and sent an update email to client.', '2025-07-25 08:45:17', '2025-07-25 08:45:17'),
+	(1371, 1, 457, 'System was back to normal after manually turning on the battery.', '2025-07-28 14:21:35', '2025-07-28 14:21:35'),
+	(1372, 1, 455, 'Sent a screenshot to client but haven\'t recieved a response.', '2025-07-29 07:20:00', '2025-07-29 07:20:00'),
+	(1373, 1, 455, 'explaining the issue was because of the high grid voltage', '2025-07-29 07:32:24', '2025-07-29 07:32:24'),
+	(1374, 1, 454, 'Fuse tracking number: https://auspost.com.au/mypost/track/details/R542010024505602', '2025-07-29 13:29:04', '2025-07-29 13:29:04');
 
 -- Dumping structure for table crm.failed_jobs
 CREATE TABLE IF NOT EXISTS `failed_jobs` (
@@ -12437,7 +12454,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 
 -- Dumping data for table crm.sessions: ~1 rows (approximately)
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-	('a2XVuHK0tiTOHV8Ktlqp6ntFNJHYx9zydhs5LuMr', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoicGkxbEJSb01qZjlDakd2MURWb3c3V0NhSDN4Q3NDSXNHdGNkazJMVSI7czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MjtzOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozNToiaHR0cDovL2xvY2FsaG9zdC9jcm0vcHVibGljL2NsaWVudHMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1753761092);
+	('a2XVuHK0tiTOHV8Ktlqp6ntFNJHYx9zydhs5LuMr', 2, '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoicGkxbEJSb01qZjlDakd2MURWb3c3V0NhSDN4Q3NDSXNHdGNkazJMVSI7czo1MDoibG9naW5fd2ViXzU5YmEzNmFkZGMyYjJmOTQwMTU4MGYwMTRjN2Y1OGVhNGUzMDk4OWQiO2k6MjtzOjk6Il9wcmV2aW91cyI7YToxOntzOjM6InVybCI7czozNToiaHR0cDovL2xvY2FsaG9zdC9jcm0vcHVibGljL2NsaWVudHMiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1753761903);
 
 -- Dumping structure for table crm.tasks
 CREATE TABLE IF NOT EXISTS `tasks` (
