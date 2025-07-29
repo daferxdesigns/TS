@@ -4,7 +4,6 @@ import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
-import { CheckCircle2 } from 'lucide-react'; // make sure you run `npm install lucide-react`
 
 export default function Edit({ auth, installer }) {
     const { data, setData, put, processing, errors } = useForm({
@@ -14,6 +13,13 @@ export default function Edit({ auth, installer }) {
         email_address: installer.email_address || '',
         address: installer.address || '',
         state: installer.state || '',
+        business: installer.business || '',
+        grid: installer.grid == 1 ? 1 : 0,
+        battery: installer.battery == 1 ? 1 : 0,
+        solar: installer.solar == 1 ? 1 : 0,
+        forklift: installer.forklift == 1 ? 1 : 0,
+        electrical_contractor_number: installer.electrical_contractor_number || '',
+        certificate_of_currency: installer.certificate_of_currency || '',
     });
 
     const submit = (e) => {
@@ -27,7 +33,6 @@ export default function Edit({ auth, installer }) {
 
             <div className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Main form */}
                     <div className="lg:col-span-2 bg-white shadow-sm rounded-lg p-6">
                         <h2 className="text-xl font-semibold text-gray-800 mb-6">Edit Installer</h2>
                         <form onSubmit={submit} className="space-y-4">
@@ -67,32 +72,83 @@ export default function Edit({ auth, installer }) {
                                 <InputError message={errors.state} className="mt-2" />
                             </div>
 
-                            <PrimaryButton disabled={processing}>Update Installer</PrimaryButton>
+                            <div>
+                                <InputLabel htmlFor="business" value="Business Name" />
+                                <TextInput id="business" type="text" value={data.business} onChange={(e) => setData('business', e.target.value)} className="mt-1 block w-full" />
+                                <InputError message={errors.business} className="mt-2" />
+                            </div>
+
+                            <div>
+                                <InputLabel htmlFor="electrical_contractor_number" value="Electrical Contractor Number" />
+                                <TextInput id="electrical_contractor_number" type="text" value={data.electrical_contractor_number} onChange={(e) => setData('electrical_contractor_number', e.target.value)} className="mt-1 block w-full" />
+                                <InputError message={errors.electrical_contractor_number} className="mt-2" />
+                            </div>
+
+                            <div>
+                                <InputLabel htmlFor="certificate_of_currency" value="Certificate of Currency" />
+                                <TextInput id="certificate_of_currency" type="text" value={data.certificate_of_currency} onChange={(e) => setData('certificate_of_currency', e.target.value)} className="mt-1 block w-full" />
+                                <InputError message={errors.certificate_of_currency} className="mt-2" />
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4">
+                                <label className="flex items-center space-x-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={data.grid === 1}
+                                        onChange={(e) => setData('grid', e.target.checked ? 1 : 0)}
+                                        className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                    />
+                                    <span className="text-sm text-gray-600">Grid Connected</span>
+                                </label>
+
+                                <label className="flex items-center space-x-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={data.battery === 1}
+                                        onChange={(e) => setData('battery', e.target.checked ? 1 : 0)}
+                                        className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                    />
+                                    <span className="text-sm text-gray-600">Battery System</span>
+                                </label>
+
+                                <label className="flex items-center space-x-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={data.solar === 1}
+                                        onChange={(e) => setData('solar', e.target.checked ? 1 : 0)}
+                                        className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                    />
+                                    <span className="text-sm text-gray-600">Solar System</span>
+                                </label>
+
+                                <label className="flex items-center space-x-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={data.forklift === 1}
+                                        onChange={(e) => setData('forklift', e.target.checked ? 1 : 0)}
+                                        className="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500"
+                                    />
+                                    <span className="text-sm text-gray-600">Forklift</span>
+                                </label>
+                            </div>
+
+                            <div className="pt-6">
+                                <PrimaryButton disabled={processing}>Update Installer</PrimaryButton>
+                            </div>
                         </form>
                     </div>
 
-                    {/* Sidebar info */}
                     <div className="bg-gray-50 p-6 rounded-lg shadow-sm border space-y-4">
-                        <h3 className="text-lg font-medium text-gray-700 mb-2">Additional Information</h3>
+                        <h3 className="text-lg font-medium text-gray-700 mb-2">Current Info</h3>
 
                         <div className="text-sm text-gray-800">
-                            <span className="font-medium">Business Name:</span>{' '}
-                            {installer.business || 'N/A'}
+                            <span className="font-medium">Business:</span> {installer.business || 'N/A'}
                         </div>
-
-                        <div className="flex items-center gap-2 text-sm text-gray-800">
-                            <CheckCircle2 className={`w-5 h-5 ${installer.grid ? 'text-green-500' : 'text-gray-300'}`} />
-                            Grid Connected
+                        <div className="text-sm text-gray-800">
+                            <span className="font-medium">Electrical No.:</span> {installer.electrical_contractor_number || 'N/A'}
                         </div>
-
-                        <div className="flex items-center gap-2 text-sm text-gray-800">
-                            <CheckCircle2 className={`w-5 h-5 ${installer.battery ? 'text-green-500' : 'text-gray-300'}`} />
-                            Battery System
-                        </div>
-
-                        <div className="flex items-center gap-2 text-sm text-gray-800">
-                            <CheckCircle2 className={`w-5 h-5 ${installer.solar ? 'text-green-500' : 'text-gray-300'}`} />
-                            Solar System
+                        <div className="text-sm text-gray-800">
+                            <span className="font-medium">Certificate:</span> {installer.certificate_of_currency || 'N/A'}
                         </div>
                     </div>
                 </div>

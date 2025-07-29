@@ -24,7 +24,7 @@ class InstallersController extends Controller
                         ->orWhere('last_name', 'like', "%{$search}%");
                 });
             })
-            ->orderBy('id')
+            ->orderBy('id', 'desc')
             ->paginate(50)
             ->withQueryString();
 
@@ -50,26 +50,33 @@ class InstallersController extends Controller
      */
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20'],
-            'email' => ['required', 'email', 'max:255'],
+            'email_address' => ['required', 'email', 'max:255'],
+            'electrical_contractor_number' => ['nullable', 'string', 'max:255'],
+            'certificate_of_currency' => ['nullable', 'string', 'max:255'],
+            'business' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:500'],
             'suburb' => ['required', 'string', 'max:255'],
             'state' => ['required', 'string', 'max:100'],
             'postcode' => ['required', 'string', 'max:10'],
+            'expiry_date' => ['required', 'string', 'max:255'],
 
             // Accept boolean values directly
             'battery' => ['nullable'],
             'grid' => ['nullable'],
             'solar' => ['nullable'],
+            'forklift' => ['nullable'],
         ]);
 
         // Force values to integers (0 or 1)
         $validated['battery'] = $request->boolean('battery') ? 1 : 0;
         $validated['grid'] = $request->boolean('grid') ? 1 : 0;
         $validated['solar'] = $request->boolean('solar') ? 1 : 0;
+        $validated['forklift'] = $request->boolean('forklift') ? 1 : 0;
 
         Installers::create($validated);
 
@@ -80,11 +87,17 @@ class InstallersController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Installers $installers)
+    public function show(Installers $installer)
     {
-        //
-    }
 
+
+        // You can eager load any relations if needed here
+        // e.g. $installer->load('relationName');
+
+        return Inertia::render('Installers/Show', [
+            'installer' => $installer,
+        ]);
+    }
     /**
      * Show the form for editing the specified resource.
      */
@@ -108,15 +121,19 @@ class InstallersController extends Controller
             'email_address' => 'nullable|email|max:255',
             'address' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:100',
-            'business' => 'nullable|string|max:20',
+            'electrical_contractor_number' => 'nullable|string|max:255',
+            'certiciate_of_currency' => 'nullable|string|max:255',
+            'expiry_date' => 'nullable|string|max:255',
+            'business' => 'nullable|string|max:255',
             'grid' => 'nullable|int|max:1',
             'solar' => 'nullable|int|max:1',
             'battery' => 'nullable|int|max:1',
+            'forklift' => 'nullable|int|max:1',
         ]);
 
         $installer->update($validated);
 
-        return redirect()->route('installer.show', $installer->id)->with('success', 'Installer updated successfully.');
+        return redirect()->route('installers.show', $installer->id)->with('success', 'Installer updated successfully.');
     }
 
     /**

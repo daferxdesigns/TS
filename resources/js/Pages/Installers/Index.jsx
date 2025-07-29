@@ -106,7 +106,7 @@ export default function InstallersIndex({ installers, filters }) {
 
                 <input
                   type="text"
-                  placeholder="Search by First or Last Name"
+                  placeholder="Search by Name"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full sm:w-80"
@@ -116,14 +116,14 @@ export default function InstallersIndex({ installers, filters }) {
               <table className="min-w-full divide-y divide-gray-200 border">
                 <thead>
                   <tr>
-                    <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">First Name</th>
-                    <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Last Name</th>
+                    <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Name</th>
                     <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Address</th>
                     <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Contact Number</th>
                     <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Battery</th>
                     <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Grid</th>
                     <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Solar</th>
-                   
+                    <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Forklift</th>
+                    <th className="bg-gray-50 px-6 py-3 text-right text-xs font-medium uppercase text-gray-500">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -132,11 +132,8 @@ export default function InstallersIndex({ installers, filters }) {
                       <tr key={installer.id}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           <Link href={route('installers.show', installer.id)} className="text-blue-600 underline">
-                            {installer.first_name}
+                            {installer.first_name} {installer.last_name}
                           </Link>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {installer.last_name}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 max-w-xs truncate">
                           {installer.address}
@@ -144,16 +141,19 @@ export default function InstallersIndex({ installers, filters }) {
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                           {installer.phone}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
                           {installer.battery ? '✅' : '❌'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
                           {installer.grid ? '✅' : '❌'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
                           {installer.solar ? '✅' : '❌'}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          {installer.forklift ? '✅' : '❌'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
                           <DropdownMenu
                             onEdit={() => router.visit(route('installers.edit', installer.id))}
                             onDelete={() => destroy(installer.id)}
