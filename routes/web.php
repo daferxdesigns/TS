@@ -7,9 +7,10 @@ use App\Http\Controllers\TaskController;
 use PHPUnit\Framework\Attributes\Ticket;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\InstallersController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketsController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InstallersController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -41,6 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/clients/{client}', [ClientsController::class, 'update'])->name('clients.update');
 
     Route::resource('installers', InstallersController::class);
+
+    Route::get('/dashboard', [DashboardController::class, 'statistics'])->name('dashboard');
 });
 
 require __DIR__ . '/auth.php';

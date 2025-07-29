@@ -110,7 +110,6 @@ export default function ClientsIndex({ clients }) {
                 <thead>
                   <tr>
                     <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Name</th>
-                    <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Lastname</th>
                     <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Address</th>
                     <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Contact Number</th>
                     
@@ -125,10 +124,10 @@ export default function ClientsIndex({ clients }) {
                             href={route('clients.show', client.id)}
                             className="text-blue-600 underline"
                           >
-                            {client.name}
+                            {client.name} {client.lastname}
                           </Link>
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">{client.lastname}</td>
+                       
                         <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate whitespace-nowrap">{client.address}</td>
                         <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">{client.phone}</td>
                         <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap text-right">

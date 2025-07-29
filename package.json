@@ -23,6 +23,7 @@
     "dependencies": {
         "lucide-react": "^0.525.0",
         "react-select": "^5.10.1",
+        "recharts": "^3.1.0",
         "ziggy-js": "^2.5.3"
     }
 }
