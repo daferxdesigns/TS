@@ -10,7 +10,7 @@ export default function CreateInstaller() {
         first_name: '',
         last_name: '',
         phone: '',
-        email: '',
+        email_address: '',
         address: '',
         suburb: '',
         state: '',
@@ -103,17 +103,17 @@ export default function CreateInstaller() {
 
                                     {/* Email */}
                                     <div>
-                                        <InputLabel htmlFor="email" value="Email" required />
+                                        <InputLabel htmlFor="email_address" value="Email" required />
                                         <TextInput
-                                            id="email"
-                                            name="email"
+                                            id="email_address"
+                                            name="email_address"
                                             type="email"
-                                            value={data.email}
+                                            value={data.email_address}
                                             className="mt-1 block w-full"
-                                            onChange={e => setData('email', e.target.value)}
+                                            onChange={e => setData('email_address', e.target.value)}
                                             required
                                         />
-                                        <InputError message={errors.email} className="mt-2" />
+                                        <InputError message={errors.email_address} className="mt-2" />
                                     </div>
 
                                     {/* Address */}

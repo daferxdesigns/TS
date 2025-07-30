@@ -22,21 +22,35 @@ class TicketsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $clients = Clients::select(['id', 'name', 'lastname'])->get()->keyBy('id');
 
-        $tickets = Tickets::select('*')
-            ->orderBy('id', 'desc')
-            ->paginate();
+        $query = Tickets::query();
+
+        // Apply search filter
+        if ($request->has('search') && $request->search !== '') {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('ticket_number', 'like', "%{$search}%")
+                    ->orWhere('title', 'like', "%{$search}%")
+                    ->orWhere('serial_number', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply status filter
+        if ($request->has('status') && $request->status !== '') {
+            $query->where('status', $request->status);
+        }
+
+        $tickets = $query->orderBy('id', 'desc')->paginate(50)->withQueryString();
 
         return Inertia::render('Tickets/Index', [
             'tickets' => $tickets,
             'clients' => $clients,
-
+            'filters' => $request->only(['search', 'status']),
         ]);
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -124,8 +138,16 @@ class TicketsController extends Controller
 
     public function show(Tickets $ticket)
     {
-        // eager load installer as assignedInstaller, plus comments and assignedUser
-        $ticket->load(['comments.user', 'assignedUser', 'assignedInstaller']);
+        // eager load installer as assignedInstaller, assignedUser, 
+        // and comments ordered by created_at descending with user relation
+        $ticket->load([
+            'comments' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            },
+            'comments.user',
+            'assignedUser',
+            'assignedInstaller'
+        ]);
 
         return Inertia::render('Tickets/View', [
             'ticket' => $ticket,

@@ -63,6 +63,7 @@ function DropdownMenu({ onEdit, onDelete }) {
 
 export default function InstallersIndex({ installers, filters }) {
   const [searchQuery, setSearchQuery] = useState(filters.search || '');
+  const [isMapOpen, setIsMapOpen] = useState(false); // <-- modal open state
 
   const destroy = (id) => {
     if (confirm('Are you sure you want to delete this installer?')) {
@@ -97,12 +98,21 @@ export default function InstallersIndex({ installers, filters }) {
               <AlertMessage />
 
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
-                <Link
-                  href={route('installers.create')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded shadow transition"
-                >
-                  + Add New Installer
-                </Link>
+                <div className="flex flex-col items-start space-y-2">
+                  <Link
+                    href={route('installers.create')}
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded shadow transition"
+                  >
+                    + Add New Installer
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setIsMapOpen(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded shadow transition"
+                  >
+                    Open Maps
+                  </button>
+                </div>
 
                 <input
                   type="text"
@@ -176,6 +186,37 @@ export default function InstallersIndex({ installers, filters }) {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {isMapOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={() => setIsMapOpen(false)}
+        >
+          <div
+            className="bg-white rounded shadow-lg p-4 max-w-full max-h-full overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              src="https://www.google.com/maps/d/embed?mid=1-Hn3HTjMtbi2RoocsGiD_fSt2z_0I-0&ehbc=2E312F"
+              width="640"
+              height="480"
+              style={{ border: 0 }}
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Google Map"
+            />
+            <button
+              type="button"
+              onClick={() => setIsMapOpen(false)}
+              className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </AuthenticatedLayout>
   );
 }

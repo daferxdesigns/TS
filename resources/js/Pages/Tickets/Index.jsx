@@ -192,16 +192,16 @@ export default function PostsIndex({ tickets, clients }) {
                           <span
                             className={`px-3 py-1 text-xs font-semibold uppercase rounded-full ${
                               ticket.status === 'open'
-                                ? 'bg-blue-100 text-blue-800'
+                                ? 'bg-blue-400 text-white'
                                 : ticket.status === 'in_progress'
-                                ? 'bg-yellow-100 text-yellow-800'
+                                ? 'bg-yellow-500 text-white'
                                 : ticket.status === 'pending'
-                                ? 'bg-orange-100 text-orange-800'
+                                ? 'bg-orange-400 text-white'
                                 : ticket.status === 'resolved'
-                                ? 'bg-green-100 text-green-800'
+                                ? 'bg-green-400 text-white'
                                 : ticket.status === 'closed'
-                                ? 'bg-gray-200 text-gray-700'
-                                : 'bg-gray-100 text-gray-600'
+                                ? 'bg-gray-400 text-white'
+                                : 'bg-gray-400 text-white'
                             }`}
                           >
                             {statusLabels[ticket.status] ?? ticket.status}
@@ -221,7 +221,28 @@ export default function PostsIndex({ tickets, clients }) {
                   </tbody>
                 </table>
 
-                <Pagination links={tickets.links} />
+                <div className="p-4 flex justify-center items-center gap-1 text-sm">
+                  {tickets.links.map((link, index) => (
+                    <button
+                      key={index}
+                      className={`px-3 py-1 rounded ${
+                        link.active
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                      }`}
+                      disabled={!link.url}
+                      dangerouslySetInnerHTML={{ __html: link.label }}
+                      onClick={() => {
+                        if (link.url) {
+                          router.visit(link.url, {
+                            preserveScroll: true,
+                            preserveState: true,
+                          });
+                        }
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
