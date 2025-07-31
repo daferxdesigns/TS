@@ -156,9 +156,6 @@ export default function PostsIndex({ tickets, clients }) {
                       <th className="bg-gray-50 px-6 py-3 text-left">
                         <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Status</span>
                       </th>
-                      <th className="bg-gray-50 px-6 py-3 text-left">
-                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Serial Number</span>
-                      </th>
                       <th className="bg-gray-50 px-6 py-3 text-left"></th>
                     </tr>
                   </thead>
@@ -180,7 +177,7 @@ export default function PostsIndex({ tickets, clients }) {
                           {clients[ticket.the_client]?.id ? (
                             <Link
                               href={route('clients.show', { client: clients[ticket.the_client].id })}
-                              className="text-black-700 font-bold"
+                              className="text-black-700 font-normal"
                             >
                               {clients[ticket.the_client] ? `${clients[ticket.the_client].name} ${clients[ticket.the_client].lastname}` : 'N/A'}
                             </Link>
@@ -192,23 +189,20 @@ export default function PostsIndex({ tickets, clients }) {
                           <span
                             className={`px-3 py-1 text-xs font-semibold uppercase rounded-full ${
                               ticket.status === 'open'
-                                ? 'bg-blue-400 text-white'
+                                ? 'bg-blue-400 shadow-sm  text-white'
                                 : ticket.status === 'in_progress'
-                                ? 'bg-yellow-500 text-white'
+                                ? 'bg-yellow-400 shadow-sm text-white'
                                 : ticket.status === 'pending'
-                                ? 'bg-orange-400 text-white'
+                                ? 'bg-orange-400 shadow-sm  text-white'
                                 : ticket.status === 'resolved'
-                                ? 'bg-green-400 text-white'
+                                ? 'bg-green-400 shadow-sm  text-white'
                                 : ticket.status === 'closed'
-                                ? 'bg-gray-400 text-white'
-                                : 'bg-gray-400 text-white'
+                                ? 'bg-gray-400 shadow-sm  text-white'
+                                : 'bg-gray-400 shadow-sm  text-white'
                             }`}
                           >
                             {statusLabels[ticket.status] ?? ticket.status}
                           </span>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
-                          {ticket.serial_number}
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap text-right">
                           <DropdownMenu
