@@ -11,6 +11,7 @@ export default function Create({ users,clients }) {
         title: '',
         description: '',
         user_id: '',
+        serial_number: '',
         the_client:'',
     });
 

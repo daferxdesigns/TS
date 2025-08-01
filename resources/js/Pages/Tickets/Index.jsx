@@ -8,7 +8,6 @@ function DropdownMenu({ onEdit, onDelete }) {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef();
 
-  // Close dropdown if clicked outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -56,6 +55,11 @@ function DropdownMenu({ onEdit, onDelete }) {
       )}
     </div>
   );
+}
+
+function truncate(str, n) {
+  if (!str) return '';
+  return str.length > n ? str.slice(0, n) + '...' : str;
 }
 
 export default function PostsIndex({ tickets, clients }) {
@@ -156,6 +160,9 @@ export default function PostsIndex({ tickets, clients }) {
                       <th className="bg-gray-50 px-6 py-3 text-left">
                         <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Status</span>
                       </th>
+                      <th className="bg-gray-50 px-6 py-3 text-left">
+                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Latest Update</span>
+                      </th>
                       <th className="bg-gray-50 px-6 py-3 text-left"></th>
                     </tr>
                   </thead>
@@ -165,12 +172,15 @@ export default function PostsIndex({ tickets, clients }) {
                         <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
                           {ticket.ticket_number}
                         </td>
-                        <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+                        <td
+                          className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap max-w-xs truncate"
+                          title={ticket.title}
+                        >
                           <Link
                             href={route('tickets.show', { id: ticket.id })}
                             className="text-black-700 font-bold"
                           >
-                            {ticket.title}
+                            {truncate(ticket.title, 50)}
                           </Link>
                         </td>
                         <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
@@ -204,6 +214,11 @@ export default function PostsIndex({ tickets, clients }) {
                             {statusLabels[ticket.status] ?? ticket.status}
                           </span>
                         </td>
+                       <td className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                        {ticket.latest_comment_date
+                          ? ticket.latest_comment_date
+                          : 'No updates yet'}
+                      </td>
                         <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap text-right">
                           <DropdownMenu
                             onEdit={() => router.visit(route('tickets.edit', { id: ticket.id }))}

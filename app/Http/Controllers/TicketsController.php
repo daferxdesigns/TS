@@ -24,11 +24,15 @@ class TicketsController extends Controller
      */
     public function index(Request $request): Response
     {
+        // Load clients keyed by id for easy lookup
         $clients = Clients::select(['id', 'name', 'lastname'])->get()->keyBy('id');
 
-        $query = Tickets::query();
+        // Prepare query to get tickets with latest comment eager loaded
+        $query = Tickets::with(['comments' => function ($q) {
+            $q->latest()->limit(1);
+        }]);
 
-        // Apply search filter
+        // Search filter for ticket_number, title, or serial_number
         if ($request->has('search') && $request->search !== '') {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -38,13 +42,22 @@ class TicketsController extends Controller
             });
         }
 
-        // Apply status filter
+        // Status filter
         if ($request->has('status') && $request->status !== '') {
             $query->where('status', $request->status);
         }
 
+        // Paginate tickets ordered by newest first
         $tickets = $query->orderBy('id', 'desc')->paginate(50)->withQueryString();
 
+        // Attach latest comment date to each ticket
+        $tickets->getCollection()->transform(function ($ticket) {
+            $latestComment = $ticket->comments->first();
+            $ticket->latest_comment_date = $latestComment ? $latestComment->created_at->format('Y-m-d H:i') : null;
+            return $ticket;
+        });
+
+        // Return inertia view with data
         return Inertia::render('Tickets/Index', [
             'tickets' => $tickets,
             'clients' => $clients,
