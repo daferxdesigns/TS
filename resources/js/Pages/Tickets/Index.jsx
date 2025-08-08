@@ -199,9 +199,9 @@ export default function PostsIndex({ tickets, clients }) {
                           <span
                             className={`px-3 py-1 text-xs font-semibold uppercase rounded-full ${
                               ticket.status === 'open'
-                                ? 'bg-blue-400 shadow-sm  text-white'
+                                ? 'bg-yellow-400 shadow-sm  text-white'
                                 : ticket.status === 'in_progress'
-                                ? 'bg-yellow-400 shadow-sm text-white'
+                                ? 'bg-blue-400 shadow-sm text-white'
                                 : ticket.status === 'pending'
                                 ? 'bg-orange-400 shadow-sm  text-white'
                                 : ticket.status === 'resolved'
