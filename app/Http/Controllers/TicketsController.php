@@ -15,6 +15,7 @@ use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 
 class TicketsController extends Controller
@@ -22,18 +23,19 @@ class TicketsController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+
     public function index(Request $request): Response
     {
-        // Load clients keyed by id for easy lookup
         $clients = Clients::select(['id', 'name', 'lastname'])->get()->keyBy('id');
 
-        // Prepare query to get tickets with latest comment eager loaded
+        // Load tickets with latest comment eager loaded
         $query = Tickets::with(['comments' => function ($q) {
             $q->latest()->limit(1);
         }]);
 
-        // Search filter for ticket_number, title, or serial_number
-        if ($request->has('search') && $request->search !== '') {
+        // Apply search filter if any
+        if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('ticket_number', 'like', "%{$search}%")
@@ -43,11 +45,11 @@ class TicketsController extends Controller
         }
 
         // Status filter
-        if ($request->has('status') && $request->status !== '') {
+        if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // Paginate tickets ordered by newest first
+        // Paginate newest first
         $tickets = $query->orderBy('id', 'desc')->paginate(50)->withQueryString();
 
         // Attach latest comment date to each ticket
@@ -57,7 +59,6 @@ class TicketsController extends Controller
             return $ticket;
         });
 
-        // Return inertia view with data
         return Inertia::render('Tickets/Index', [
             'tickets' => $tickets,
             'clients' => $clients,
@@ -65,14 +66,23 @@ class TicketsController extends Controller
         ]);
     }
 
+
+
+
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): Response
+    public function create()
     {
-        $clients = Clients::select(['id', 'name', 'lastname'])->pluck('name', 'id');
-        $users = User::select(['id', 'name'])->pluck('name', 'id');
-        return Inertia::render('Tickets/Create', compact('users', 'clients'));
+        $clients = Clients::select(['id', 'name', 'lastname'])->get();
+        $users = User::select(['id', 'name'])->get();
+        $installers = Installers::select(['id', 'first_name', 'last_name'])->get();
+
+        return Inertia::render('Tickets/Create', [
+            'clients' => $clients,
+            'users' => $users,
+            'installers' => $installers,
+        ]);
     }
 
     /**

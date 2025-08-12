@@ -1,8 +1,7 @@
+import React, { useState, useEffect, useRef } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import AlertMessage from '@/Components/AlertMessage.jsx';
-import Pagination from '@/Components/Pagination.jsx';
-import { useState, useRef, useEffect } from 'react';
 
 function DropdownMenu({ onEdit, onDelete }) {
   const [open, setOpen] = useState(false);
@@ -62,9 +61,9 @@ function truncate(str, n) {
   return str.length > n ? str.slice(0, n) + '...' : str;
 }
 
-export default function PostsIndex({ tickets, clients }) {
-  const [statusFilter, setStatusFilter] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
+export default function PostsIndex({ tickets, clients, filters }) {
+  const [statusFilter, setStatusFilter] = useState(filters.status || '');
+  const [searchQuery, setSearchQuery] = useState(filters.search || '');
 
   const destroy = (id) => {
     if (confirm('Are you sure?')) {
@@ -80,19 +79,25 @@ export default function PostsIndex({ tickets, clients }) {
     closed: 'Closed',
   };
 
-  const filteredTickets = tickets.data
-    .filter(ticket =>
-      statusFilter ? ticket.status?.toLowerCase() === statusFilter.toLowerCase() : true
-    )
-    .filter(ticket => {
-      const query = searchQuery.toLowerCase();
-      return (
-        ticket.ticket_number?.toLowerCase().includes(query) ||
-        ticket.title?.toLowerCase().includes(query) ||
-        ticket.serial_number?.toLowerCase().includes(query) ||
-        clients[ticket.the_client]?.name?.toLowerCase().includes(query)
-      );
-    });
+  const onStatusChange = (e) => {
+    const value = e.target.value;
+    setStatusFilter(value);
+    router.get(
+      route('tickets.index'),
+      { status: value, search: searchQuery },
+      { preserveState: true, replace: true }
+    );
+  };
+
+  const onSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    router.get(
+      route('tickets.index'),
+      { status: statusFilter, search: value },
+      { preserveState: true, replace: true }
+    );
+  };
 
   return (
     <AuthenticatedLayout
@@ -111,20 +116,19 @@ export default function PostsIndex({ tickets, clients }) {
               <div className="min-w-full align-middle">
                 <AlertMessage />
 
-                {/* Search and Filter Section */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
                   <input
                     type="text"
                     placeholder="Search Ticket #, Title, Client, Serial #"
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={onSearchChange}
                     className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full sm:w-80"
                   />
 
                   <div className="flex flex-col sm:flex-row gap-2">
                     <select
                       value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value)}
+                      onChange={onStatusChange}
                       className="border border-gray-300 rounded-md px-3 py-2 text-sm"
                     >
                       <option value="">All Statuses</option>
@@ -144,30 +148,39 @@ export default function PostsIndex({ tickets, clients }) {
                   </div>
                 </div>
 
-                {/* Table */}
                 <table className="min-w-full divide-y divide-gray-200 border mt-4">
                   <thead>
                     <tr>
                       <th className="bg-gray-50 px-6 py-3 text-left">
-                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Ticket Number</span>
+                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">
+                          Ticket Number
+                        </span>
                       </th>
                       <th className="bg-gray-50 px-6 py-3 text-left">
-                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Title</span>
+                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">
+                          Title
+                        </span>
                       </th>
                       <th className="bg-gray-50 px-6 py-3 text-left">
-                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Client</span>
+                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">
+                          Client
+                        </span>
                       </th>
                       <th className="bg-gray-50 px-6 py-3 text-left">
-                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Status</span>
+                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">
+                          Status
+                        </span>
                       </th>
                       <th className="bg-gray-50 px-6 py-3 text-left">
-                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Latest Update</span>
+                        <span className="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">
+                          Latest Update
+                        </span>
                       </th>
                       <th className="bg-gray-50 px-6 py-3 text-left"></th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200 divide-solid">
-                    {filteredTickets.map((ticket) => (
+                    {tickets.data.map((ticket) => (
                       <tr key={ticket.id}>
                         <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
                           {ticket.ticket_number}
@@ -186,10 +199,14 @@ export default function PostsIndex({ tickets, clients }) {
                         <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
                           {clients[ticket.the_client]?.id ? (
                             <Link
-                              href={route('clients.show', { client: clients[ticket.the_client].id })}
+                              href={route('clients.show', {
+                                client: clients[ticket.the_client].id,
+                              })}
                               className="text-black-700 font-normal"
                             >
-                              {clients[ticket.the_client] ? `${clients[ticket.the_client].name} ${clients[ticket.the_client].lastname}` : 'N/A'}
+                              {clients[ticket.the_client]
+                                ? `${clients[ticket.the_client].name} ${clients[ticket.the_client].lastname}`
+                                : 'N/A'}
                             </Link>
                           ) : (
                             'N/A'
@@ -214,14 +231,16 @@ export default function PostsIndex({ tickets, clients }) {
                             {statusLabels[ticket.status] ?? ticket.status}
                           </span>
                         </td>
-                       <td className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
-                        {ticket.latest_comment_date
-                          ? ticket.latest_comment_date
-                          : 'No updates yet'}
-                      </td>
+                        <td className="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                          {ticket.latest_comment_date
+                            ? ticket.latest_comment_date
+                            : 'No updates yet'}
+                        </td>
                         <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap text-right">
                           <DropdownMenu
-                            onEdit={() => router.visit(route('tickets.edit', { id: ticket.id }))}
+                            onEdit={() =>
+                              router.visit(route('tickets.edit', { id: ticket.id }))
+                            }
                             onDelete={() => destroy(ticket.id)}
                           />
                         </td>
