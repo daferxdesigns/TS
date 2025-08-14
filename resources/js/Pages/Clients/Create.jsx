@@ -17,10 +17,26 @@ export default function Create() {
         postcode: '',
     });
 
-    const submit = (e) => {
-        e.preventDefault();
-        post(route('clients.store'));
-    };
+   const submit = (e) => {
+    e.preventDefault();
+
+    // If email is empty, set it to "POSTAL"
+    const emailToSubmit = data.email_address.trim() === '' ? 'POSTAL' : data.email_address;
+
+    // Validate email format if it's not "POSTAL"
+    if (emailToSubmit !== 'POSTAL' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailToSubmit)) {
+        alert('Please enter a valid email address.');
+        return;
+    }
+
+    // Submit the form with possibly updated email
+    post(route('clients.store'), {
+        data: {
+            ...data,
+            email_address: emailToSubmit,
+        },
+    });
+};
 
     return (
         <AuthenticatedLayout
@@ -91,7 +107,7 @@ export default function Create() {
 
                                 {/* Email */}
                                 <div className="mt-4">
-                                    <InputLabel htmlFor="email_address" value="Email" required />
+                                    <InputLabel htmlFor="email_address" value="Email" />
 
                                     <TextInput
                                         id="email_address"
@@ -100,7 +116,7 @@ export default function Create() {
                                         value={data.email_address}
                                         className="mt-1 block w-full"
                                         onChange={(e) => setData('email_address', e.target.value)}
-                                        required
+                                        
                                     />
 
                                     <InputError message={errors.email_address} className="mt-2" />

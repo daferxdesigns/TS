@@ -2,30 +2,16 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import AlertMessage from '@/Components/AlertMessage.jsx';
 import Pagination from '@/Components/Pagination.jsx';
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 
 function DropdownMenu({ onEdit, onDelete }) {
   const [open, setOpen] = useState(false);
-  const dropdownRef = useRef();
-
-  // Close dropdown if clicked outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   return (
-    <div className="relative inline-block text-left" ref={dropdownRef}>
+    <div className="relative inline-block text-left">
       <button
         onClick={() => setOpen(!open)}
         className="p-1 rounded hover:bg-gray-200 focus:outline-none"
-        aria-haspopup="true"
-        aria-expanded={open}
       >
         ⋮
       </button>
@@ -60,22 +46,14 @@ function DropdownMenu({ onEdit, onDelete }) {
   );
 }
 
-export default function ClientsIndex({ clients }) {
-  const [searchQuery, setSearchQuery] = useState('');
+export default function ClientsIndex({ clients, filters }) {
+  const [searchQuery, setSearchQuery] = useState(filters.search || '');
 
   const destroy = (id) => {
     if (confirm('Are you sure you want to delete this client?')) {
       router.delete(route('clients.destroy', id));
     }
   };
-
-  const filteredClients = clients.data.filter(client => {
-    const query = searchQuery.toLowerCase();
-    return (
-      client.name?.toLowerCase().includes(query) ||
-      client.lastname?.toLowerCase().includes(query)
-    );
-  });
 
   return (
     <AuthenticatedLayout
@@ -101,36 +79,36 @@ export default function ClientsIndex({ clients }) {
                   type="text"
                   placeholder="Search by Name or Lastname"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    // Send search to backend
+                    router.get(route('clients.index'), { search: e.target.value }, { preserveState: true, replace: true });
+                  }}
                   className="border border-gray-300 rounded-md px-3 py-2 text-sm w-full sm:w-80"
                 />
               </div>
 
-              <table className="min-w-full divide-y divide-gray-200 border mt-4">
+              <table className="min-w-full divide-y divide-gray-200 border mt-4 text-sm">
                 <thead>
                   <tr>
-                    <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Name</th>
-                    <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Address</th>
-                    <th className="bg-gray-50 px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Contact Number</th>
-                    
+                    <th className="bg-gray-50 px-4 py-2 text-left font-medium uppercase text-gray-500">Name</th>
+                    <th className="bg-gray-50 px-4 py-2 text-left font-medium uppercase text-gray-500">Address</th>
+                    <th className="bg-gray-50 px-4 py-2 text-left font-medium uppercase text-gray-500">Contact Number</th>
+                    <th className="bg-gray-50 px-4 py-2"></th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200 divide-solid">
-                  {filteredClients.length > 0 ? (
-                    filteredClients.map(client => (
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {clients.data.length > 0 ? (
+                    clients.data.map(client => (
                       <tr key={client.id}>
-                        <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
-                          <Link
-                            href={route('clients.show', client.id)}
-                            className="text-blue-600 underline"
-                          >
+                        <td className="px-4 py-2 text-blue-600 underline whitespace-nowrap">
+                          <Link href={route('clients.show', client.id)}>
                             {client.name} {client.lastname}
                           </Link>
                         </td>
-                       
-                        <td className="px-6 py-4 text-sm text-gray-900 max-w-xs truncate whitespace-nowrap">{client.address}</td>
-                        <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">{client.phone}</td>
-                        <td className="px-6 py-4 text-sm text-gray-900 whitespace-nowrap text-right">
+                        <td className="px-4 py-2 max-w-xs truncate">{client.address}</td>
+                        <td className="px-4 py-2 whitespace-nowrap">{client.phone}</td>
+                        <td className="px-4 py-2 text-right">
                           <DropdownMenu
                             onEdit={() => router.visit(route('clients.edit', client.id))}
                             onDelete={() => destroy(client.id)}
@@ -140,7 +118,7 @@ export default function ClientsIndex({ clients }) {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                      <td colSpan={4} className="px-4 py-2 text-center text-gray-500">
                         No clients found.
                       </td>
                     </tr>
@@ -148,6 +126,7 @@ export default function ClientsIndex({ clients }) {
                 </tbody>
               </table>
 
+              {/* Pagination works when not searching */}
               {clients.links && <Pagination links={clients.links} />}
             </div>
           </div>

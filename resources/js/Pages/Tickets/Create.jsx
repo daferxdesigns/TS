@@ -53,8 +53,8 @@ export default function Create({ users, clients, installers }) {
 
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-          <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div className="overflow-hidden overflow-x-auto p-6 bg-white border-b border-gray-200">
+          <div className="bg-white overflow-show shadow-sm sm:rounded-lg">
+            <div className="overflow-show overflow-x-auto p-6 bg-white border-b border-gray-200">
               <form onSubmit={submit} className="min-w-full">
                 <div>
                   <InputLabel htmlFor="title" value="Title" required />
@@ -101,15 +101,20 @@ export default function Create({ users, clients, installers }) {
                 <div className="mt-4">
                   <InputLabel htmlFor="the_client" value="Client" required />
                   <Select
-                    inputId="the_client"
-                    options={clientOptions}
-                    value={clientOptions.find((option) => option.value === data.the_client) || null}
-                    onChange={(option) => setData('the_client', option ? option.value : null)}
-                    className="mt-1"
-                    classNamePrefix="select"
-                    placeholder="Select a client..."
-                    isClearable
-                  />
+  inputId="the_client"
+  options={clientOptions}
+  value={clientOptions.find((option) => option.value === data.the_client) || null}
+  onChange={(option) => setData('the_client', option ? option.value : null)}
+  className="mt-1"
+  classNamePrefix="select"
+  placeholder="Select a client..."
+  isClearable
+  menuPortalTarget={document.body} // ✅ renders menu outside overflow-hidden container
+  styles={{
+    menuPortal: (base) => ({ ...base, zIndex: 9999 }), // ✅ keeps it on top
+  }}
+/>
+
                   <InputError message={errors.the_client} className="mt-2" />
                 </div>
 
