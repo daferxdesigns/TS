@@ -97,6 +97,7 @@ class ClientsController extends Controller
             'phone' => 'nullable|string|max:20',
             'email_address' => 'nullable|email|max:255',
             'address' => 'nullable|string|max:255',
+            'suburb' => 'nullable|string|max:255',
             'state' => 'nullable|string|max:100',
             'postcode' => 'nullable|string|max:20',
         ]);

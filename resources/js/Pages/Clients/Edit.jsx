@@ -12,6 +12,7 @@ export default function Edit({ auth, client }) {
         phone: client.phone || '',
         email_address: client.email_address || '',
         address: client.address || '',
+        suburb: client.suburb || '',
         state: client.state || '',
         postcode: client.postcode || '',
     });
@@ -58,6 +59,12 @@ export default function Edit({ auth, client }) {
                             <InputLabel htmlFor="address" value="Address" />
                             <TextInput id="address" type="text" value={data.address} onChange={(e) => setData('address', e.target.value)} className="mt-1 block w-full" />
                             <InputError message={errors.address} className="mt-2" />
+                        </div>
+
+                         <div>
+                            <InputLabel htmlFor="suburb" value="Suburb" />
+                            <TextInput id="suburb" type="text" value={data.suburb} onChange={(e) => setData('suburb', e.target.value)} className="mt-1 block w-full" />
+                            <InputError message={errors.suburb} className="mt-2" />
                         </div>
 
                         <div>

@@ -49,10 +49,10 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Installers
                                 </NavLink>
                                 <NavLink
-                                    href={route('tasks.index')}
-                                    active={route().current('tasks.*')}
+                                    href={route('outstandingjobs.index')}
+                                    active={route().current('outstandingjobs.*')}
                                 >
-                                    Tasks
+                                    Jobs
                                 </NavLink>
                             </div>
                         </div>

@@ -93,7 +93,7 @@ export default function Create({ users, clients, installers }) {
                     value={data.serial_number}
                     className="mt-1 block w-full"
                     onChange={(e) => setData('serial_number', e.target.value)}
-                    required
+                    
                   />
                   <InputError message={errors.serial_number} className="mt-2" />
                 </div>

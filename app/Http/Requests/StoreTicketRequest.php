@@ -24,7 +24,7 @@ class StoreTicketRequest extends FormRequest
         return [
             'title' => ['required', 'string'],
             'description' => ['required', 'string'],
-            'serial_number' => ['sometimes', 'string'],
+            'serial_number' => ['nullable', 'string'],
             'the_client' => ['nullable', 'int'],
             'user_id' => ['nullable', 'int']
         ];

@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InstallersController;
+use App\Http\Controllers\OutstandingJobsController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -44,6 +45,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('installers', InstallersController::class);
 
     Route::get('/dashboard', [DashboardController::class, 'statistics'])->name('dashboard');
+
+    Route::resource('outstandingjobs', OutstandingJobsController::class);
 });
+
+
+
+
+
+
 
 require __DIR__ . '/auth.php';

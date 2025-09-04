@@ -178,6 +178,7 @@ class TicketsController extends Controller
                 'value' => $client->id,
                 'label' => $client->name . ' ' . $client->lastname,
                 'phone' => '0' . $client->phone,
+                'email_address' => $client->email_address,
                 'address' => $client->address . ',' . $client->suburb . ',' . $client->state . ',' . $client->postcode
             ]),
             'assignedUser' => $ticket->assignedUser,

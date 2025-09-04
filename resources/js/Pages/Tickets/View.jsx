@@ -113,38 +113,64 @@ export default function TicketView({ ticket, clients, assignedUser, assignedInst
             {/* Main content */}
             <div className="lg:col-span-2 space-y-6">
               {/* Ticket Info */}
-              <div className="bg-white shadow-sm rounded-lg p-6 border">
-                <h3 className="text-lg font-semibold text-gray-800">{ticket.title}</h3>
-                <p className="text-sm text-gray-500">Ticket ID: #{ticket.ticket_number}</p>
-                <p className="text-sm text-gray-500">Serial Number: {ticket.serial_number ?? 'N/A'} </p>
-                <p className="text-sm text-gray-500">Reference: </p>
-                <p className="mt-2 text-sm text-gray-700">
-                  <span className="font-medium">Client:</span>{' '}
-                  {clients.find((c) => c.value === ticket.the_client)?.label || 'Unassigned'}
-                </p>
-                 <p className="text-sm text-gray-700">Phone:  {clients.find((c) => c.value === ticket.the_client)?.phone || 'No Address Saved'}</p>
-                 <p className="text-sm text-gray-700">Address:  {clients.find((c) => c.value === ticket.the_client)?.address || 'No Address Saved'}</p>
-                <p className="mt-1">
-                  <span className="font-medium">Status:</span>{' '}
-                  <span
-                    className={`px-2 py-1 text-xs font-semibold uppercase rounded-full ${
-                      statusData.status === 'open'
-                        ? 'bg-blue-100 text-blue-800'
-                        : statusData.status === 'in_progress'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : statusData.status === 'pending'
-                        ? 'bg-orange-100 text-orange-800'
-                        : statusData.status === 'resolved'
-                        ? 'bg-green-100 text-green-800'
-                        : statusData.status === 'closed'
-                        ? 'bg-gray-200 text-gray-700'
-                        : 'bg-gray-100 text-gray-600'
-                    }`}
-                  >
-                    {statusData.status.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
-                  </span>
-                </p>
-              </div>
+              
+            <div className="bg-white shadow-sm rounded-lg p-6 border">
+              <h3 className="text-lg font-semibold text-gray-800">{ticket.title}</h3>
+              <p className="text-sm text-gray-500">Ticket ID: #{ticket.ticket_number}</p>
+              <p className="text-sm text-gray-500">Serial Number: {ticket.serial_number ?? 'N/A'} </p>
+              <p className="text-sm text-gray-500">Reference: </p>
+
+              {/* Get client object */}
+              {(() => {
+                const client = clients.find((c) => c.value === ticket.the_client);
+
+                return (
+                  <>
+                    <p className="mt-2 text-sm text-gray-700">
+                      <span className="font-medium">Client:</span>{' '}
+                      {client ? (
+                        <a href={route('clients.show', { id: client.value })} className="text-blue-600 hover:underline">
+                          {client.label}
+                        </a>
+                      ) : (
+                        'Unassigned'
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      Phone: {client?.phone || 'No Phone Saved'}
+                    </p>
+                     <p className="text-sm text-gray-700">
+                      Email: {client?.email_address || 'No Email Saved'}
+                    </p>
+                    <p className="text-sm text-gray-700">
+                      Address: {client?.address || 'No Address Saved'}
+                    </p>
+                  </>
+                );
+              })()}
+              
+              <p className="mt-1">
+                <span className="font-medium">Status:</span>{' '}
+                <span
+                  className={`px-2 py-1 text-xs font-semibold uppercase rounded-full ${
+                    statusData.status === 'open'
+                      ? 'bg-blue-100 text-blue-800'
+                      : statusData.status === 'in_progress'
+                      ? 'bg-yellow-100 text-yellow-800'
+                      : statusData.status === 'pending'
+                      ? 'bg-orange-100 text-orange-800'
+                      : statusData.status === 'resolved'
+                      ? 'bg-green-100 text-green-800'
+                      : statusData.status === 'closed'
+                      ? 'bg-gray-200 text-gray-700'
+                      : 'bg-gray-100 text-gray-600'
+                  }`}
+                >
+                  {statusData.status.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                </span>
+              </p>
+            </div>
+
 
               {/* Editable Description */}
               <div className="bg-white shadow-sm rounded-lg p-6 border">

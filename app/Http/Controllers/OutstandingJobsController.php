@@ -2,63 +2,116 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
+use App\Models\Client;
+use App\Models\Clients;
+use App\Models\Installer;
+use App\Models\Installers;
 use Illuminate\Http\Request;
+use App\Models\OutstandingJobs;
 
 class OutstandingJobsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $search = trim((string) $request->input('search', ''));
 
-    /**
-     * Show the form for creating a new resource.
-     */
+        $jobs = OutstandingJobs::with(['client', 'installer'])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    // --- Search in clients ---
+                    $q->orWhereHas('client', function ($clientQ) use ($search) {
+                        $clientQ->where('name', 'like', "%{$search}%")
+                            ->orWhere('lastname', 'like', "%{$search}%");
+                    });
+
+                    // --- Search in installers ---
+                    $q->orWhereHas('installer', function ($installerQ) use ($search) {
+                        $installerQ->where('first_name', 'like', "%{$search}%")
+                            ->orWhere('last_name', 'like', "%{$search}%");
+                    });
+
+                    // --- Search in outstandingjobs own fields ---
+                    $q->orWhere('componentry', 'like', "%{$search}%")
+                        ->orWhere('notes', 'like', "%{$search}%")
+                        ->orWhere('sales', 'like', "%{$search}%")
+                        ->orWhere('rebate', 'like', "%{$search}%")
+                        ->orWhere('pre_approval', 'like', "%{$search}%")
+                        ->orWhere('installation_date', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('installation_date', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
+        return Inertia::render('Jobs/Index', [
+            'jobs'    => $jobs,
+            'filters' => $request->only('search'),
+        ]);
+    }
     public function create()
     {
-        //
+        $clients = Clients::all();
+        $installers = Installers::all();
+
+        return Inertia::render('OutstandingJobsCreate', [
+            'clients' => $clients,
+            'installers' => $installers,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'installer_id' => 'required|exists:installers,id',
+            'componentry' => 'required|string',
+            'installation_date' => 'required|date',
+            'notes' => 'nullable|string',
+            'pre_approval' => 'nullable|string',
+            'sales' => 'nullable|numeric',
+            'rebate' => 'nullable|numeric',
+        ]);
+
+        OutstandingJobs::create($request->all());
+
+        return redirect()->route('Jobs.index')->with('success', 'Outstanding job created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(OutstandingJobs $outstandingjob)
     {
-        //
+        $clients = Clients::all();
+        $installers = Installers::all();
+
+        return Inertia::render('OutstandingJobsEdit', [
+            'job' => $outstandingjob,
+            'clients' => $clients,
+            'installers' => $installers,
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, OutstandingJobs $outstandingjob)
     {
-        //
+        $request->validate([
+            'client_id' => 'required|exists:clients,id',
+            'installer_id' => 'required|exists:installers,id',
+            'componentry' => 'required|string',
+            'installation_date' => 'required|date',
+            'notes' => 'nullable|string',
+            'pre_approval' => 'nullable|string',
+            'sales' => 'nullable|numeric',
+            'rebate' => 'nullable|numeric',
+        ]);
+
+        $outstandingjob->update($request->all());
+
+        return redirect()->route('Jobs.index')->with('success', 'Outstanding job updated successfully.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(OutstandingJobs $outstandingjob)
     {
-        //
-    }
+        $outstandingjob->delete();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('Jobs.index')->with('success', 'Outstanding job deleted successfully.');
     }
 }
