@@ -47,6 +47,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'statistics'])->name('dashboard');
 
     Route::resource('outstandingjobs', OutstandingJobsController::class);
+    Route::post('outstandingjobs/{job}/notes', [OutstandingJobsController::class, 'storeNote'])
+        ->name('outstandingjobs.notes.store');
+
+    Route::put('outstandingjobs/{job}/notes/{note}', [OutstandingJobsController::class, 'updateNote'])
+        ->name('outstandingjobs.notes.update');
+
+    Route::delete('outstandingjobs/{job}/notes/{note}', [OutstandingJobsController::class, 'destroyNote'])
+        ->name('outstandingjobs.notes.destroy');
 });
 
 

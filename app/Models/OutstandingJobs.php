@@ -36,4 +36,8 @@ class OutstandingJobs extends Model
     {
         return $this->belongsTo(Installers::class, 'installer_id');
     }
+    public function notes()
+    {
+        return $this->hasMany(JobNote::class, 'job_id');
+    }
 }

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use id;
 use Inertia\Inertia;
-use App\Models\Client;
 use App\Models\Clients;
-use App\Models\Installer;
+use App\Models\JobNote;
 use App\Models\Installers;
 use Illuminate\Http\Request;
 use App\Models\OutstandingJobs;
@@ -59,6 +59,97 @@ class OutstandingJobsController extends Controller
             'installers' => $installers,
         ]);
     }
+    public function show($id)
+    {
+        // Eager-load client, installer, and notes with their user
+        $job = OutstandingJobs::with([
+            'client',
+            'installer',
+            'notes' => function ($query) {
+                $query->orderBy('created_at', 'desc'); // newest first
+            },
+            'notes.user'
+        ])->findOrFail($id);
+
+
+
+        // Transform notes for React
+        $notesArray = [];
+        if ($job->notes && $job->notes->count() > 0) {
+            foreach ($job->notes as $note) {
+                $notesArray[] = [
+                    'id' => $note->id,
+                    'content' => $note->content ?? '',
+                    'user' => $note->user ? [
+                        'id' => $note->user->id,
+                        'name' => $note->user->name,
+                    ] : null,
+                    'created_at' => $note->created_at ? $note->created_at->format('Y-m-d H:i') : null,
+                ];
+            }
+        }
+
+        return Inertia::render('Jobs/Show', [
+            'job' => [
+                'id' => $job->id,
+                'componentry' => $job->componentry,
+                'installation_date' => $job->installation_date,
+                'pre_approval' => $job->pre_approval,
+                'sales' => $job->sales,
+                'rebate' => $job->rebate,
+                'client' => $job->client,
+                'installer' => $job->installer,
+                'notes' => $notesArray, // pass safe array to React
+            ],
+        ]);
+    }
+
+
+
+
+
+    public function storeNote(Request $request, $id)
+    {
+        $request->validate(['note' => 'required|string|max:1000']);
+
+        $job = OutstandingJobs::findOrFail($id);
+
+        $job->notes()->create([
+            'content' => $request->note,
+            'user_id' => auth()->id(),
+        ]);
+
+        return back();
+    }
+
+    public function updateNote(Request $request, $jobId, $noteId)
+    {
+        $request->validate(['note' => 'required|string|max:1000']);
+
+        $note = JobNote::where('job_id', $jobId)->findOrFail($noteId);
+
+        if ($note->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $note->update(['content' => $request->note]);
+
+        return back();
+    }
+
+    public function destroyNote($jobId, $noteId)
+    {
+        $note = JobNote::where('job_id', $jobId)->findOrFail($noteId);
+
+        if ($note->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $note->delete();
+
+        return back();
+    }
+
 
     public function store(Request $request)
     {
