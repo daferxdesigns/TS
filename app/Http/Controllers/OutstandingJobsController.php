@@ -59,35 +59,22 @@ class OutstandingJobsController extends Controller
             'installers' => $installers,
         ]);
     }
+
+
+
     public function show($id)
     {
-        // Eager-load client, installer, and notes with their user
         $job = OutstandingJobs::with([
             'client',
             'installer',
             'notes' => function ($query) {
-                $query->orderBy('created_at', 'desc'); // newest first
+                $query->orderBy('created_at', 'desc');
             },
-            'notes.user'
+            'notes.user',
         ])->findOrFail($id);
 
+        //  dd($job);
 
-
-        // Transform notes for React
-        $notesArray = [];
-        if ($job->notes && $job->notes->count() > 0) {
-            foreach ($job->notes as $note) {
-                $notesArray[] = [
-                    'id' => $note->id,
-                    'content' => $note->content ?? '',
-                    'user' => $note->user ? [
-                        'id' => $note->user->id,
-                        'name' => $note->user->name,
-                    ] : null,
-                    'created_at' => $note->created_at ? $note->created_at->format('Y-m-d H:i') : null,
-                ];
-            }
-        }
 
         return Inertia::render('Jobs/Show', [
             'job' => [
@@ -99,11 +86,12 @@ class OutstandingJobsController extends Controller
                 'rebate' => $job->rebate,
                 'client' => $job->client,
                 'installer' => $job->installer,
-                'notes' => $notesArray, // pass safe array to React
+                'notes' => JobNote::with('user')
+                    ->where('job_id', $job->id)
+                    ->get(),
             ],
         ]);
     }
-
 
 
 

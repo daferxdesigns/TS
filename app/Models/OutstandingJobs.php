@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use GuzzleHttp\Client;
-use Psy\VersionUpdater\Installer;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -26,7 +24,34 @@ class OutstandingJobs extends Model
         'rebate',
     ];
 
+    /*
+    protected $table = 'outstanding_jobs';
+
+    protected $fillable = [
+        'client_id',
+        'installer_id',
+        'name',
+        'phone_number',
+        'address',
+        'expiry_date',
+        'rebate_type',
+        'componentry',
+        'installer',
+        'date_of_install',
+        'notes',
+        'sales',
+        'greendeal',
+        'ces',
+        'pre_approval',
+        'rebate',
+    ];
+*/
     // Relationships
+    public function notes()
+    {
+        return $this->hasMany(JobNote::class, 'job_id');
+    }
+
     public function client()
     {
         return $this->belongsTo(Clients::class, 'client_id');
@@ -35,9 +60,5 @@ class OutstandingJobs extends Model
     public function installer()
     {
         return $this->belongsTo(Installers::class, 'installer_id');
-    }
-    public function notes()
-    {
-        return $this->hasMany(JobNote::class, 'job_id');
     }
 }

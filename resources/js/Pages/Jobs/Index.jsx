@@ -91,6 +91,7 @@ export default function OutstandingJobsIndex({ jobs, filters }) {
                 <thead>
                   <tr>
                     <th className="bg-gray-50 px-4 py-2 text-left font-medium uppercase text-gray-500">Client</th>
+                     <th className="bg-gray-50 px-4 py-2 text-left font-medium uppercase text-gray-500">Client</th>
                     <th className="bg-gray-50 px-4 py-2 text-left font-medium uppercase text-gray-500">Installer</th>
                     <th className="bg-gray-50 px-4 py-2 text-left font-medium uppercase text-gray-500">Componentry</th>
                     <th className="bg-gray-50 px-4 py-2 text-left font-medium uppercase text-gray-500">Installation Date</th>
@@ -108,6 +109,11 @@ export default function OutstandingJobsIndex({ jobs, filters }) {
                         <td className="px-4 py-2 text-blue-600 underline whitespace-nowrap">
                           <Link href={route('outstandingjobs.show', job.id)}>
                             {job.client?.name || '-'} {job.client?.lastname || ''}
+                          </Link>
+                        </td>
+                        <td className="px-4 py-2 text-blue-600 underline whitespace-nowrap">
+                          <Link href={route('outstandingjobs.show', job.id)}>
+                            {job.name}
                           </Link>
                         </td>
                  <td className="px-4 py-2 whitespace-nowrap">
